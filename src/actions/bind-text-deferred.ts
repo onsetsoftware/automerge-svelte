@@ -1,7 +1,6 @@
 import type { AutomergeSvelteStore } from "../automerge-svelte-store.type";
 import type { Path, PathValue } from "dot-path-value";
-import { getByPath } from "dot-path-value";
-import { setByPath } from "../set-by-path";
+import { getByPath, setByPath } from "dot-path-value";
 import { getTextPatches } from "../diff-to-patches";
 import { patch } from "@onsetsoftware/automerge-patcher";
 import { quickClone } from "../helpers/quick-clone";
@@ -12,10 +11,10 @@ export function bindTextDeferred<T extends Record<string, any>>(
     store,
     path,
     title,
-  }: { store: AutomergeSvelteStore<T>; path: Path<T>; title?: string }
+  }: { store: AutomergeSvelteStore<T>; path: Path<T>; title?: string },
 ) {
   const subscription = store.subscribe((doc) => {
-    node.value = getByPath(doc, path).toString();
+    node.value = getByPath(doc, path)?.toString();
   });
 
   let lastValue: string = node.value;
@@ -40,7 +39,7 @@ export function bindTextDeferred<T extends Record<string, any>>(
           patch(doc, p);
         });
       },
-      title ? { message: `Update ${title}` } : {}
+      title ? { message: `Update ${title}` } : {},
     );
   };
 

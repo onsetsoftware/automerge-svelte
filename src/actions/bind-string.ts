@@ -10,12 +10,12 @@ export function bindString<T extends Record<string, any>>(
     store,
     path,
     title,
-  }: { store: AutomergeSvelteStore<T>; path: Path<T>; title?: string }
+  }: { store: AutomergeSvelteStore<T>; path: Path<T>; title?: string },
 ) {
   let lastValue: string;
 
   const subscription = store.subscribe((doc) => {
-    node.value = lastValue = getByPath(doc, path).toString();
+    node.value = lastValue = getByPath(doc, path)?.toString() || "";
   });
 
   const inputListener = () => {
@@ -29,7 +29,7 @@ export function bindString<T extends Record<string, any>>(
           patch(doc, p);
         });
       },
-      title ? { message: `Update ${title}` } : {}
+      title ? { message: `Update ${title}` } : {},
     );
   };
 

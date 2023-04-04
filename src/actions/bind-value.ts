@@ -1,7 +1,6 @@
 import type { AutomergeSvelteStore } from "../automerge-svelte-store.type";
 import type { Path, PathValue } from "dot-path-value";
-import { getByPath } from "dot-path-value";
-import { setByPath } from "../set-by-path";
+import { getByPath, setByPath } from "dot-path-value";
 import type { Extend } from "@automerge/automerge";
 
 export function bindValue<T extends Record<string, any>>(
@@ -10,7 +9,7 @@ export function bindValue<T extends Record<string, any>>(
     store,
     path,
     title,
-  }: { store: AutomergeSvelteStore<T>; path: Path<T>; title?: string }
+  }: { store: AutomergeSvelteStore<T>; path: Path<T>; title?: string },
 ) {
   const subscription = store.subscribe((doc) => {
     node.value = (getByPath(doc, path) as string) || "";
@@ -22,10 +21,10 @@ export function bindValue<T extends Record<string, any>>(
         setByPath(
           doc,
           path as Path<Extend<T>>,
-          node.value as PathValue<Extend<T>, Path<Extend<T>>>
+          node.value as PathValue<Extend<T>, Path<Extend<T>>>,
         );
       },
-      title ? { message: `Update ${title}` } : {}
+      title ? { message: `Update ${title}` } : {},
     );
   };
 

@@ -66,7 +66,7 @@ jobs:
         if: steps.tests.outcome == 'success'
         uses: softprops/action-gh-release@v1
         with:
-          name: Automerge Svelte Store v${{ needs.check_if_version_upgraded.outputs.version }}
+          name: v${{ needs.check_if_version_upgraded.outputs.version }}
           tag_name: v${{ needs.check_if_version_upgraded.outputs.version }}
           target_commitish: main
           generate_release_notes: true
