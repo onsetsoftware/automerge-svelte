@@ -3,6 +3,7 @@ import type { Path } from "dot-path-value";
 import { getByPath } from "dot-path-value";
 import { getTextPatches } from "../diff-to-patches";
 import { patch } from "@onsetsoftware/automerge-patcher";
+import { Extend } from "@automerge/automerge";
 
 export function bindText<T extends Record<string, any>>(
   node: HTMLInputElement,
@@ -10,26 +11,25 @@ export function bindText<T extends Record<string, any>>(
     store,
     path,
     title,
-  }: { store: AutomergeSvelteStore<T>; path: Path<T>; title?: string }
+  }: { store: AutomergeSvelteStore<T>; path: Path<T>; title?: string },
 ) {
-  let lastValue: string;
-
   const subscription = store.subscribe((doc) => {
-    node.value = lastValue = getByPath(doc, path).toString();
+    node.value = getByPath(doc, path).toString();
   });
 
   const inputListener = () => {
-    const patches = getTextPatches(lastValue, node.value);
-
     store.change(
       (doc) => {
+        const lastValue = getByPath(doc, path as Path<Extend<T>>);
+        const patches = getTextPatches(lastValue, node.value);
+
         patches.forEach((p) => {
           p.path.unshift(...path.split("."));
 
           patch(doc, p);
         });
       },
-      title ? { message: `Update ${title}` } : {}
+      title ? { message: `Update ${title}` } : {},
     );
   };
 

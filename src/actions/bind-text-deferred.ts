@@ -4,6 +4,7 @@ import { getByPath, setByPath } from "dot-path-value";
 import { getTextPatches } from "../diff-to-patches";
 import { patch } from "@onsetsoftware/automerge-patcher";
 import { quickClone } from "../helpers/quick-clone";
+import { Extend } from "@automerge/automerge";
 
 export function bindTextDeferred<T extends Record<string, any>>(
   node: HTMLInputElement,
@@ -17,8 +18,6 @@ export function bindTextDeferred<T extends Record<string, any>>(
     node.value = getByPath(doc, path)?.toString();
   });
 
-  let lastValue: string = node.value;
-
   const inputListener = () => {
     store.localChange((doc) => {
       doc = quickClone(doc);
@@ -29,11 +28,11 @@ export function bindTextDeferred<T extends Record<string, any>>(
   };
 
   const changeListener = () => {
-    const patches = getTextPatches(lastValue, node.value);
-
-    lastValue = node.value;
     store.change(
       (doc) => {
+        const lastValue = getByPath(doc, path as Path<Extend<T>>);
+        const patches = getTextPatches(lastValue, node.value);
+
         patches.forEach((p) => {
           p.path.unshift(...path.split("."));
           patch(doc, p);

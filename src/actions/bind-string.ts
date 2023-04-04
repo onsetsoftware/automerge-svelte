@@ -3,6 +3,7 @@ import type { Path } from "dot-path-value";
 import { getByPath } from "dot-path-value";
 import { getStringPatches } from "../diff-to-patches";
 import { patch } from "@onsetsoftware/automerge-patcher";
+import { Extend } from "@automerge/automerge";
 
 export function bindString<T extends Record<string, any>>(
   node: HTMLInputElement,
@@ -12,17 +13,16 @@ export function bindString<T extends Record<string, any>>(
     title,
   }: { store: AutomergeSvelteStore<T>; path: Path<T>; title?: string },
 ) {
-  let lastValue: string;
-
   const subscription = store.subscribe((doc) => {
-    node.value = lastValue = getByPath(doc, path)?.toString() || "";
+    node.value = getByPath(doc, path)?.toString() || "";
   });
 
   const inputListener = () => {
-    const patches = getStringPatches(lastValue, node.value);
-
     store.change(
       (doc) => {
+        const lastValue = getByPath(doc, path as Path<Extend<T>>);
+        const patches = getStringPatches(lastValue, node.value);
+
         patches.forEach((p) => {
           p.path.unshift(...path.split("."));
 
