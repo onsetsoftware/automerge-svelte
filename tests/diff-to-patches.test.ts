@@ -1,18 +1,11 @@
-import { beforeEach, describe, expect, test } from "vitest";
-import type {
-  DelPatch,
-  InsertPatch,
-  SpliceTextPatch,
-} from "@automerge/automerge";
+import type { DelPatch, InsertPatch } from "@automerge/automerge";
 import { change, from, Text } from "@automerge/automerge";
-import {
-  getStringPatches,
-  getTextPatches,
-} from "../src/diff-to-patches";
 import { patch } from "@onsetsoftware/automerge-patcher";
+import { beforeEach, describe, expect, test } from "vitest";
+import { getStringPatches, getTextPatches } from "../src/diff-to-patches";
 
 describe("convert changes from diff into automerge patches", () => {
-  beforeEach(() => { });
+  beforeEach(() => {});
 
   type Test = {
     name: string;
@@ -126,7 +119,7 @@ describe("convert changes from diff into automerge patches", () => {
           }
 
           return p;
-        })
+        }),
       );
     });
   });
