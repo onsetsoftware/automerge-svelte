@@ -21,7 +21,7 @@ export function bindString<T extends Record<string, any>>(
     store.change(
       (doc) => {
         const lastValue = getByPath(doc, path as Path<Extend<T>>);
-        const patches = getStringPatches(lastValue, node.value);
+        const patches = getStringPatches(String(lastValue), node.value);
 
         patches.forEach((p) => {
           p.path.unshift(...path.split("."));

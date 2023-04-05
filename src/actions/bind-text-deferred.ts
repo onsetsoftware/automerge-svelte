@@ -31,7 +31,7 @@ export function bindTextDeferred<T extends Record<string, any>>(
     store.change(
       (doc) => {
         const lastValue = getByPath(doc, path as Path<Extend<T>>);
-        const patches = getTextPatches(lastValue, node.value);
+        const patches = getTextPatches(String(lastValue), node.value);
 
         patches.forEach((p) => {
           p.path.unshift(...path.split("."));
