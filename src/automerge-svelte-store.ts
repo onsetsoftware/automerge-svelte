@@ -1,9 +1,12 @@
 import type { ChangeFn, ChangeOptions, Doc } from "@automerge/automerge";
 import type { AutomergeStore } from "@onsetsoftware/automerge-store";
 import {
-  derived, Subscriber, writable, type Readable,
+  derived,
+  Subscriber,
+  writable,
+  type Readable,
   type Updater,
-  type Writable
+  type Writable,
 } from "svelte/store";
 import type { AutomergeSvelteStore as AutomergeSvelteStoreType } from "./automerge-svelte-store.type";
 
@@ -16,7 +19,7 @@ export class AutomergeSvelteStore<T>
   ready: Readable<boolean> = derived(this.#storeReady, (ready) => ready);
 
   #subscribers: number = 0;
-  #unSubscriber: () => void = () => { };
+  #unSubscriber: () => void = () => {};
 
   #unSubscribe: () => void = () => {
     this.#unSubscriber();
@@ -25,10 +28,6 @@ export class AutomergeSvelteStore<T>
   constructor(store?: AutomergeStore<T>) {
     this.#store = store || null;
 
-    if (store) {
-      this.setStoreReady();
-    }
-
     this.#state = writable(store ? store.doc : null, () => {
       if (store) {
         this.setStore();
@@ -36,10 +35,18 @@ export class AutomergeSvelteStore<T>
 
       return this.#unSubscribe;
     });
+
+    if (store) {
+      this.setStoreReady();
+    }
   }
 
   get id() {
     return this.#store?.id;
+  }
+
+  get doc() {
+    return this.#store?.doc ?? null;
   }
 
   get subscribe() {
@@ -76,7 +83,7 @@ export class AutomergeSvelteStore<T>
     this.#unSubscriber =
       this.#store?.subscribe((doc: Doc<T>) => {
         this.#state.set(doc);
-      }) ?? (() => { });
+      }) ?? (() => {});
   }
 
   private setStoreReady() {
@@ -88,12 +95,11 @@ export class AutomergeSvelteStore<T>
   }
 
   change(callback: ChangeFn<T>, options: ChangeOptions<T> = {}): Doc<T> {
-    return this.#store ? this.#store.change(callback, options) : {} as Doc<T>;
+    return this.#store ? this.#store.change(callback, options) : ({} as Doc<T>);
   }
 
   localChange(callback: Updater<T>) {
     this.#state.update((state: T | null) => {
-
       return state ? callback({ ...state }) : null;
     });
   }

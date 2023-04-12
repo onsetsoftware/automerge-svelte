@@ -127,7 +127,7 @@ describe("root store", () => {
       });
 
       rootStore.swapStore(
-        new AutomergeStore<DocumentType>("test2", replacementDoc)
+        new AutomergeStore<DocumentType>("test2", replacementDoc),
       );
     }));
 
@@ -157,7 +157,7 @@ describe("root store", () => {
 
       setTimeout(() => {
         rootStore.swapStore(
-          new AutomergeStore<DocumentType>("test2", replacementDoc)
+          new AutomergeStore<DocumentType>("test2", replacementDoc),
         );
       }, 100);
     }));
@@ -170,7 +170,7 @@ describe("root store", () => {
     const replacementDoc = from<DocumentType>(newData);
 
     rootStore.swapStore(
-      new AutomergeStore<DocumentType>("test2", replacementDoc)
+      new AutomergeStore<DocumentType>("test2", replacementDoc),
     );
 
     rootStore.change((doc) => {
@@ -194,7 +194,7 @@ describe("root store", () => {
 
         expect(doc.string).toEqual("this is the one");
         expect(store.doc.string).toEqual("hello world");
-        expect(rootStore.get().string).toEqual("hello world");
+        expect(rootStore.get()?.string).toEqual("hello world");
         done();
       });
 
