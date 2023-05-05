@@ -1,28 +1,26 @@
 import { Counter, Text } from "@automerge/automerge";
+import { EntityState } from "@onsetsoftware/mutable-js";
 
-export type DocumentType = typeof documentData;
-
-export const documentData: {
+export type DocumentType = {
   string: string;
   text: Text;
   counter: Counter;
   array: string[];
-  object?: {
+  object: {
     hello: string;
     data?: string;
     empty?: string;
     text?: Text;
   };
-  people: {
-    ids: string[];
-    entities: {
-      [id: string]: {
-        name: string;
-        id: string;
-      };
-    };
-  };
-} = {
+  people: EntityState<Person>;
+};
+
+export type Person = {
+  id: string;
+  name: string;
+};
+
+export const documentData: DocumentType = {
   string: "hello world",
   text: new Text("hello world"),
   counter: new Counter(0),

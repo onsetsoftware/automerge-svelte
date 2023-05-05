@@ -1,4 +1,3 @@
-import { AutomergeDerivedStore } from "./automerge-derived-store";
 import type { EntityState } from "@onsetsoftware/mutable-js";
 import {
   addEntities,
@@ -6,7 +5,7 @@ import {
   deleteEntity,
   updateEntity,
 } from "@onsetsoftware/mutable-js";
-import type { Doc } from "@automerge/automerge";
+import { AutomergeDerivedStore } from "./automerge-derived-store";
 import type { AutomergeSvelteStore } from "./automerge-svelte-store";
 
 type EntityTitles = {
@@ -15,15 +14,14 @@ type EntityTitles = {
 };
 
 export class AutomergeEntityStore<
+  U,
   T extends { id: string },
-  V extends EntityState<T> = EntityState<T>,
-  U = Doc<unknown>
-> extends AutomergeDerivedStore<V, U> {
+> extends AutomergeDerivedStore<EntityState<T>, U> {
   readonly #titles: EntityTitles | undefined;
   constructor(
     rootStore: AutomergeSvelteStore<U>,
-    fn: (doc: U) => V,
-    titles?: EntityTitles
+    fn: (doc: U) => EntityState<T>,
+    titles?: EntityTitles,
   ) {
     super(rootStore, fn);
     this.#titles = titles;
@@ -37,7 +35,7 @@ export class AutomergeEntityStore<
       {
         message:
           message || this.#titles ? `Add ${this.#titles!.singular}` : undefined,
-      }
+      },
     );
   }
 
@@ -49,12 +47,13 @@ export class AutomergeEntityStore<
       {
         message:
           message || this.#titles
-            ? `Add ${entities.length} ${entities.length > 1
-              ? this.#titles!.plural
-              : this.#titles!.singular
-            }`
+            ? `Add ${entities.length} ${
+                entities.length > 1
+                  ? this.#titles!.plural
+                  : this.#titles!.singular
+              }`
             : undefined,
-      }
+      },
     );
   }
 
@@ -65,8 +64,10 @@ export class AutomergeEntityStore<
       },
       {
         message:
-          message || this.#titles ? `Update ${this.#titles!.singular}` : undefined,
-      }
+          message || this.#titles
+            ? `Update ${this.#titles!.singular}`
+            : undefined,
+      },
     );
   }
 
@@ -77,8 +78,10 @@ export class AutomergeEntityStore<
       },
       {
         message:
-          message || this.#titles ? `Delete ${this.#titles!.singular}` : undefined,
-      }
+          message || this.#titles
+            ? `Delete ${this.#titles!.singular}`
+            : undefined,
+      },
     );
   }
 }
