@@ -1,51 +1,42 @@
-import type { AutomergeSvelteStore } from "../automerge-svelte-store.type";
-import type { Path, PathValue } from "dot-path-value";
-import { getByPath, setByPath } from "dot-path-value";
-import type { Extend } from "@automerge/automerge";
+import { Extend } from "@automerge/automerge";
+import { getByPath, Path, PathValue, setByPath } from "dot-path-value";
 import { quickClone } from "../helpers/quick-clone";
+import { inputAction } from "./input-action";
+import { BindOptions } from "./types/bind-options.type";
 
 export function bindValueDeferred<T extends Record<string, any>>(
   node: HTMLInputElement,
-  {
-    store,
-    path,
-    title,
-  }: { store: AutomergeSvelteStore<T>; path: Path<T>; title?: string },
+  { store, path, title }: BindOptions<T>,
 ) {
-  const subscription = store.subscribe((doc) => {
-    node.value = (getByPath(doc, path) as string) || "";
-  });
+  return inputAction<BindOptions<T>>(
+    {
+      subscribe: (node, { store, path }) => {
+        return store.subscribe((doc) => {
+          node.value = getByPath(doc, path)?.toString() || "";
+        });
+      },
+      inputListener: (node, { store, path }) => {
+        store.localChange((doc) => {
+          doc = quickClone(doc);
+          setByPath(doc, path, node.value as PathValue<T, Path<T>>);
 
-  const inputListener = () => {
-    store.localChange((doc) => {
-      doc = quickClone(doc);
-      setByPath(doc, path, node.value as PathValue<T, Path<T>>);
-
-      return doc;
-    });
-  };
-
-  const changeListener = () => {
-    store.change(
-      (doc) => {
-        setByPath(
-          doc,
-          path as Path<Extend<T>>,
-          node.value as PathValue<Extend<T>, Path<Extend<T>>>,
+          return doc;
+        });
+      },
+      changeListener: (node, { store, path, title }) => {
+        store.change(
+          (doc) => {
+            setByPath(
+              doc,
+              path as Path<Extend<T>>,
+              node.value as PathValue<Extend<T>, Path<Extend<T>>>,
+            );
+          },
+          title ? { message: `Update ${title}` } : {},
         );
       },
-      title ? { message: `Update ${title}` } : {},
-    );
-  };
-
-  node.addEventListener("input", inputListener);
-  node.addEventListener("change", changeListener);
-
-  return {
-    destroy() {
-      subscription();
-      node.removeEventListener("input", inputListener);
-      node.removeEventListener("change", changeListener);
     },
-  };
+    node,
+    { store, path, title },
+  );
 }

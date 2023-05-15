@@ -13,6 +13,7 @@ export type DocumentType = {
     text?: Text;
   };
   people: EntityState<Person>;
+  checked: boolean;
 };
 
 export type Person = {
@@ -43,4 +44,5 @@ export const documentData: DocumentType = {
       },
     },
   },
+  checked: false,
 };

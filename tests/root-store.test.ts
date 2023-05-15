@@ -137,6 +137,58 @@ describe("root store", () => {
       });
     }));
 
+  test("changes to the store can be batched in transactions", () => {
+    return new Promise((done: Function) => {
+      let calls = 0;
+      rootStore.subscribe((doc) => {
+        if (calls === 0) {
+          expect({ ...doc }).toEqual(documentData);
+          calls++;
+          return;
+        }
+        expect({ ...doc }.array).toEqual(["hello", "world", "looking", "good"]);
+        done();
+      });
+
+      rootStore.transaction(() => {
+        rootStore.change((doc) => {
+          doc.array.push("looking");
+        });
+
+        rootStore.change((doc) => {
+          doc.array.push("good");
+        });
+      });
+    });
+  });
+
+  test("changes to the store can be undone", () => {
+    return new Promise((done: Function) => {
+      let calls = 0;
+      rootStore.subscribe((doc) => {
+        if (calls === 0) {
+          expect({ ...doc }).toEqual(documentData);
+          calls++;
+          return;
+        } else if (calls === 1) {
+          expect({ ...doc }.array).toEqual(["hello", "world", "looking"]);
+          calls++;
+          return;
+        }
+        expect({ ...doc }.array).toEqual(["hello", "world"]);
+        done();
+      });
+
+      rootStore.transaction(() => {
+        rootStore.change((doc) => {
+          doc.array.push("looking");
+        });
+      });
+
+      rootStore.undo();
+    });
+  });
+
   test("automerge stores can be swapped out", () =>
     new Promise<void>((done) => {
       const newData: DocumentType = {

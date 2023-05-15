@@ -1,39 +1,34 @@
-import type { AutomergeSvelteStore } from "../automerge-svelte-store.type";
+import type { Extend } from "@automerge/automerge";
 import type { Path, PathValue } from "dot-path-value";
 import { getByPath, setByPath } from "dot-path-value";
-import type { Extend } from "@automerge/automerge";
+import { inputAction } from "./input-action";
+import { BindOptions } from "./types/bind-options.type";
 
 export function bindValue<T extends Record<string, any>>(
   node: HTMLInputElement,
-  {
-    store,
-    path,
-    title,
-  }: { store: AutomergeSvelteStore<T>; path: Path<T>; title?: string },
+  options: BindOptions<T>,
 ) {
-  const subscription = store.subscribe((doc) => {
-    node.value = (getByPath(doc, path) as string) || "";
-  });
-
-  const inputListener = () => {
-    store.change(
-      (doc) => {
-        setByPath(
-          doc,
-          path as Path<Extend<T>>,
-          node.value as PathValue<Extend<T>, Path<Extend<T>>>,
+  return inputAction<BindOptions<T>>(
+    {
+      subscribe: (node, { store, path }) => {
+        return store.subscribe((doc) => {
+          node.value = (getByPath(doc, path) as string) || "";
+        });
+      },
+      inputListener: (node, { store, path, title }) => {
+        store.change(
+          (doc) => {
+            setByPath(
+              doc,
+              path as Path<Extend<T>>,
+              node.value as PathValue<Extend<T>, Path<Extend<T>>>,
+            );
+          },
+          title ? { message: `Update ${title}` } : {},
         );
       },
-      title ? { message: `Update ${title}` } : {},
-    );
-  };
-
-  node.addEventListener("input", inputListener);
-
-  return {
-    destroy() {
-      subscription();
-      node.removeEventListener("input", inputListener);
     },
-  };
+    node,
+    options,
+  );
 }

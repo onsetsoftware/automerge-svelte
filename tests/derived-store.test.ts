@@ -75,6 +75,31 @@ describe("root store", () => {
     });
   });
 
+  test("changes to a derived store can be batched in transactions", () => {
+    return new Promise((done: Function) => {
+      let calls = 0;
+      derivedStore.subscribe((doc) => {
+        if (calls === 0) {
+          expect({ ...doc }).toEqual(documentData.object);
+          calls++;
+          return;
+        }
+        expect({ ...doc }.hello).toEqual("hello there world looking good");
+        done();
+      });
+
+      derivedStore.transaction(() => {
+        derivedStore.change((doc) => {
+          doc.hello = "hello there world";
+        });
+
+        derivedStore.change((doc) => {
+          doc.hello += " looking good";
+        });
+      });
+    });
+  });
+
   test("single value derived stores can be changed", () => {
     new Promise<void>((done) => {
       let initialRun = true;

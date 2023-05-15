@@ -26,6 +26,10 @@ export class AutomergeDerivedStore<T, U>
     });
   }
 
+  transaction(changes: () => void) {
+    this.#rootStore.transaction(changes);
+  }
+
   get subscribe() {
     return this.#state.subscribe;
   }
