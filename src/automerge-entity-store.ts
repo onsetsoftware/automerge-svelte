@@ -2,7 +2,7 @@ import type { EntityState } from "@onsetsoftware/mutable-js";
 import {
   addEntities,
   addEntity,
-  deleteEntity,
+  deleteEntityList,
   updateEntity,
 } from "@onsetsoftware/mutable-js";
 import { AutomergeDerivedStore } from "./automerge-derived-store";
@@ -34,7 +34,8 @@ export class AutomergeEntityStore<
       },
       {
         message:
-          message || this.#titles ? `Add ${this.#titles!.singular}` : undefined,
+          message ||
+          (this.#titles ? `Add ${this.#titles!.singular}` : undefined),
       },
     );
   }
@@ -46,13 +47,14 @@ export class AutomergeEntityStore<
       },
       {
         message:
-          message || this.#titles
+          message ||
+          (this.#titles
             ? `Add ${entities.length} ${
                 entities.length > 1
                   ? this.#titles!.plural
                   : this.#titles!.singular
               }`
-            : undefined,
+            : undefined),
       },
     );
   }
@@ -64,9 +66,23 @@ export class AutomergeEntityStore<
       },
       {
         message:
-          message || this.#titles
-            ? `Update ${this.#titles!.singular}`
-            : undefined,
+          message ||
+          (this.#titles ? `Update ${this.#titles!.singular}` : undefined),
+      },
+    );
+  }
+
+  updateMany(entities: Array<Partial<T> & Pick<T, "id">>, message?: string) {
+    this.change(
+      (doc) => {
+        entities.forEach((entity) => {
+          updateEntity(doc as EntityState<T>, entity);
+        });
+      },
+      {
+        message:
+          message ||
+          (this.#titles ? `Update ${this.#titles!.plural}` : undefined),
       },
     );
   }
@@ -74,13 +90,27 @@ export class AutomergeEntityStore<
   delete(id: string, message?: string) {
     this.change(
       (doc) => {
-        deleteEntity(doc as EntityState<T>, id);
+        deleteEntityList(doc as EntityState<T>, id);
       },
       {
         message:
-          message || this.#titles
-            ? `Delete ${this.#titles!.singular}`
-            : undefined,
+          message ||
+          (this.#titles ? `Delete ${this.#titles!.singular}` : undefined),
+      },
+    );
+  }
+
+  deleteMany(ids: string[], message?: string) {
+    this.change(
+      (doc) => {
+        ids.forEach((id) => {
+          deleteEntityList(doc as EntityState<T>, id);
+        });
+      },
+      {
+        message:
+          message ||
+          (this.#titles ? `Delete ${this.#titles!.plural}` : undefined),
       },
     );
   }

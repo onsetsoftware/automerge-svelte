@@ -1,9 +1,13 @@
 import { beforeEach, describe, expect, test } from "vitest";
-import { AutomergeStore } from "@onsetsoftware/automerge-store";
+import {
+  AutomergeRepoStore,
+  AutomergeStore,
+} from "@onsetsoftware/automerge-store";
 import { documentData, type DocumentType } from "./data";
 import { from, type Extend } from "@automerge/automerge";
 import { AutomergeSvelteStore } from "../src/automerge-svelte-store";
 import { get } from "svelte/store";
+import { Repo } from "automerge-repo";
 
 describe("root store", () => {
   let store: AutomergeStore<DocumentType>,
@@ -28,7 +32,7 @@ describe("root store", () => {
     });
   });
 
-  test("root store with not AutomergeStore can have a new one swapped in", () => {
+  test("root store with no AutomergeStore can have a new one swapped in", () => {
     const rootStore = new AutomergeSvelteStore<DocumentType>();
 
     rootStore.swapStore(store);
@@ -55,6 +59,33 @@ describe("root store", () => {
         done();
       });
     }));
+
+  test("an automerge-repo store can be passed in and is marked as ready", () => {
+    const repo = new Repo({
+      network: [],
+    });
+
+    const handle = repo.create<DocumentType>();
+    handle.change((doc) => {
+      Object.assign(doc, documentData);
+    });
+
+    const found = repo.find<DocumentType>(handle.documentId);
+
+    const store = new AutomergeRepoStore<DocumentType>(found);
+    const rootStore = new AutomergeSvelteStore(store);
+
+    expect(get(rootStore.ready)).toBe(false);
+
+    return new Promise<void>((done) => {
+      rootStore.ready.subscribe((ready) => {
+        if (!ready) return;
+
+        expect(rootStore.get()).toEqual(documentData);
+        done();
+      });
+    });
+  });
 
   test("root store updates when the automerge store updates", () =>
     new Promise<void>((done) => {

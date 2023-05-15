@@ -20,14 +20,14 @@
     "vitest": "^0.29.0"
   },
   "peerDependencies": {
-    "automerge-repo": "https://gitpkg.now.sh/onsetsoftware/automerge-repo/packages/automerge-repo?dummy-release-0.0.51-2",
+    "automerge-repo": "0.0.52",
     "svelte": "^3.55.1"
   },
   "dependencies": {
     "@automerge/automerge": "^2.0.3",
-    "@onsetsoftware/automerge-store": "next",
+    "@onsetsoftware/automerge-store": "0.6.0",
     "@onsetsoftware/automerge-patcher": "^0.7.0",
-    "@onsetsoftware/mutable-js": "^0.1.4",
+    "@onsetsoftware/mutable-js": "^0.3.0",
     "diff": "^5.1.0",
     "dot-path-value": "^0.0.9"
   },

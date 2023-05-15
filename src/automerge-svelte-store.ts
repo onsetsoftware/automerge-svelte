@@ -28,17 +28,17 @@ export class AutomergeSvelteStore<T>
   constructor(store?: AutomergeStore<T>) {
     this.#store = store || null;
 
-    this.#state = writable(store ? store.doc : null, () => {
-      if (store) {
+    this.#state = writable(store?.isReady ? store.doc : null, () => {
+      if (store?.isReady) {
         this.setStore();
       }
 
       return this.#unSubscribe;
     });
 
-    if (store) {
+    store?.onReady(() => {
       this.setStoreReady();
-    }
+    });
   }
 
   get id() {
