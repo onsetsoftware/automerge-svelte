@@ -8,7 +8,7 @@ export function bindChecked<T extends Record<string, any>>(
   node: HTMLInputElement,
   { store, path, title }: BindOptions<T>,
 ) {
-  return inputAction<BindOptions<T>>(
+  return inputAction(
     {
       subscribe: (node, { store, path }) => {
         return store.subscribe((doc) => {

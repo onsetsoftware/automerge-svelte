@@ -5,9 +5,10 @@ import { getByPath } from "dot-path-value";
 import { getStringPatches } from "../diff-to-patches";
 import { inputAction } from "./input-action";
 import { BindOptions } from "./types/bind-options.type";
+import { InputElement } from "./types/input-elements.type";
 
 export function bindString<T extends Record<string, any>>(
-  node: HTMLInputElement,
+  node: InputElement,
   options: BindOptions<T>,
 ) {
   return inputAction(

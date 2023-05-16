@@ -3,12 +3,13 @@ import type { Path, PathValue } from "dot-path-value";
 import { getByPath, setByPath } from "dot-path-value";
 import { inputAction } from "./input-action";
 import { BindOptions } from "./types/bind-options.type";
+import { FormControlElement } from "./types/input-elements.type";
 
 export function bindValue<T extends Record<string, any>>(
-  node: HTMLInputElement,
+  node: FormControlElement,
   options: BindOptions<T>,
 ) {
-  return inputAction<BindOptions<T>>(
+  return inputAction(
     {
       subscribe: (node, { store, path }) => {
         return store.subscribe((doc) => {

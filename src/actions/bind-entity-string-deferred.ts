@@ -4,12 +4,13 @@ import { getStringPatches } from "../diff-to-patches";
 import { quickClone } from "../helpers/quick-clone";
 import { inputAction } from "./input-action";
 import { BindEntityOptions } from "./types/bind-entity-options.type";
+import { InputElement } from "./types/input-elements.type";
 
 export function bindEntityStringDeferred<
   U,
   T extends { id: string; [key: string]: any },
->(node: HTMLInputElement, options: BindEntityOptions<U, T>) {
-  return inputAction<BindEntityOptions<U, T>>(
+>(node: InputElement, options: BindEntityOptions<U, T>) {
+  return inputAction(
     {
       subscribe: (node, { store, ids, property }) => {
         return store.subscribe((doc) => {

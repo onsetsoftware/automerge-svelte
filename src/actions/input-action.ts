@@ -1,14 +1,18 @@
 import { Unsubscriber } from "svelte/store";
+import { FormControlElement } from "./types/input-elements.type";
 
-type Actions<T> = {
-  subscribe: (node: HTMLInputElement, options: T) => Unsubscriber;
-  inputListener: (node: HTMLInputElement, options: T) => void;
-  changeListener?: (node: HTMLInputElement, options: T) => void;
+type Actions<T, U extends FormControlElement = FormControlElement> = {
+  subscribe: (node: U, options: T) => Unsubscriber;
+  inputListener: (node: U, options: T) => void;
+  changeListener?: (node: U, options: T) => void;
 };
 
-export const inputAction = <T>(
-  actions: Actions<T>,
-  node: HTMLInputElement,
+export const inputAction = <
+  T,
+  U extends FormControlElement = FormControlElement,
+>(
+  actions: Actions<T, U>,
+  node: U,
   options: T,
 ) => {
   let unsubscribe: Unsubscriber;

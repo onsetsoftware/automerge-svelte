@@ -6,12 +6,13 @@ import { getTextPatches } from "../diff-to-patches";
 import { quickClone } from "../helpers/quick-clone";
 import { inputAction } from "./input-action";
 import { BindOptions } from "./types/bind-options.type";
+import { InputElement } from "./types/input-elements.type";
 
 export function bindTextDeferred<T extends Record<string, any>>(
-  node: HTMLInputElement,
+  node: InputElement,
   { store, path, title }: BindOptions<T>,
 ) {
-  return inputAction<BindOptions<T>>(
+  return inputAction(
     {
       subscribe: (node, { store, path }) => {
         return store.subscribe((doc) => {
