@@ -23,7 +23,8 @@ export function bindEntityValueDeferred<
         store.localChange((doc) => {
           doc = quickClone(doc);
           ids.forEach((id) => {
-            doc.entities[id][property] = node.value as T[typeof property];
+            doc.entities[id][property as keyof T] =
+              node.value as T[typeof property];
           });
           return doc;
         });

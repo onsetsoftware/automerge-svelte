@@ -6,6 +6,6 @@ export type BindEntityOptions<
 > = {
   store: AutomergeEntityStore<U, T>;
   ids: string[];
-  property: keyof T;
+  property: string;
   title?: string;
 };
