@@ -11,9 +11,11 @@ export function bindEntityStringDeferred<
 >(node: HTMLInputElement, options: BindEntityOptions<U, T>) {
   return inputAction<BindEntityOptions<U, T>>(
     {
-      subscribe: (node, { store, ids, property, hide }) => {
+      subscribe: (node, { store, ids, property }) => {
         return store.subscribe((doc) => {
-          if (!hide) {
+          const values = new Set(ids.map((id) => doc.entities[id]?.[property]));
+
+          if (values.size === 1) {
             node.value = doc.entities[ids[0]]?.[property] || "";
           } else {
             node.value = "";
@@ -29,19 +31,18 @@ export function bindEntityStringDeferred<
           return doc;
         });
       },
-      changeListener: (node, { store, ids, property, title }) => {
+      changeListener: (node, options) => {
+        const { store, ids, property, title } = options;
+
         store.change(
           (doc) => {
-            const lastValue = doc.entities[ids[0]][property as keyof Extend<T>];
-            const patches = getStringPatches(String(lastValue), node.value);
-
-            patches.forEach((p) => {
-              const path = p.path.slice();
-              ids.forEach((id) => {
+            ids.forEach((id) => {
+              const lastValue =
+                doc.entities[id][property as keyof Extend<T>] || "";
+              const patches = getStringPatches(String(lastValue), node.value);
+              patches.forEach((p) => {
                 p.path.unshift(...[property as string]);
-
                 patch(doc.entities[id], p);
-                p.path = path;
               });
             });
           },

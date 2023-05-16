@@ -15,7 +15,7 @@ type EntityTitles = {
 
 export class AutomergeEntityStore<
   U,
-  T extends { id: string },
+  T extends { id: string; [key: string]: any },
 > extends AutomergeDerivedStore<EntityState<T>, U> {
   readonly #titles: EntityTitles | undefined;
   constructor(

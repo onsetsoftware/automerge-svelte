@@ -8,9 +8,11 @@ export function bindEntityValueDeferred<
 >(node: HTMLInputElement, options: BindEntityOptions<U, T>) {
   return inputAction<BindEntityOptions<U, T>>(
     {
-      subscribe: (node, { store, ids, property, hide }) => {
+      subscribe: (node, { store, ids, property }) => {
         return store.subscribe((doc) => {
-          if (!hide) {
+          const values = new Set(ids.map((id) => doc.entities[id]?.[property]));
+
+          if (values.size === 1) {
             node.value = doc.entities[ids[0]]?.[property] || "";
           } else {
             node.value = "";
