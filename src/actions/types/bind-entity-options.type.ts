@@ -1,11 +1,12 @@
+import { GetIdType, HasId } from "@onsetsoftware/entity-state";
 import { AutomergeEntityStore } from "../../automerge-entity-store";
 
 export type BindEntityOptions<
   U,
-  T extends { id: string; [key: string]: any },
+  T extends HasId<T> & { [K in keyof T]: T[K] },
 > = {
   store: AutomergeEntityStore<U, T>;
-  ids: string[];
-  property: string;
+  ids: GetIdType<T>[];
+  property: keyof T;
   title?: string;
 };

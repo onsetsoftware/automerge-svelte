@@ -1,12 +1,13 @@
+import { HasId } from "@onsetsoftware/entity-state";
 import { quickClone } from "../helpers/quick-clone";
 import { inputAction } from "./input-action";
 import { BindEntityOptions } from "./types/bind-entity-options.type";
 import { FormControlElement } from "./types/input-elements.type";
 
-export function bindEntityValueDeferred<
-  U,
-  T extends { id: string; [key: string]: any },
->(node: FormControlElement, options: BindEntityOptions<U, T>) {
+export function bindEntityValueDeferred<U, T extends HasId<T>>(
+  node: FormControlElement,
+  options: BindEntityOptions<U, T>,
+) {
   return inputAction(
     {
       subscribe: (node, { store, ids, property }) => {
@@ -14,7 +15,7 @@ export function bindEntityValueDeferred<
           const values = new Set(ids.map((id) => doc.entities[id]?.[property]));
 
           if (values.size === 1) {
-            node.value = doc.entities[ids[0]]?.[property] || "";
+            node.value = (doc.entities[ids[0]]?.[property] as string) || "";
           } else {
             node.value = "";
           }

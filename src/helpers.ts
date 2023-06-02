@@ -1,8 +1,12 @@
-import type { EntityState } from "@onsetsoftware/mutable-js";
+import type {
+  EntityState,
+  GetIdType,
+  HasId,
+} from "@onsetsoftware/entity-state";
 
-export function getEntity<T extends { id: string }>(
+export function getEntity<T extends HasId<T>>(
   state: EntityState<T>,
-  id: string
+  id: GetIdType<T>,
 ): T {
   return state.entities[id];
 }

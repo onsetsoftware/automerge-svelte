@@ -26,7 +26,8 @@
     "@automerge/automerge": "^2.0.3",
     "@onsetsoftware/automerge-patcher": "^0.7.0",
     "@onsetsoftware/automerge-store": "^0.7.0",
-    "@onsetsoftware/mutable-js": "^0.3.0",
+    "@onsetsoftware/mutable-js": "^0.4.0",
+    "@onsetsoftware/entity-state": "^0.0.1",
     "diff": "^5.1.0",
     "dot-path-value": "^0.0.9"
   },

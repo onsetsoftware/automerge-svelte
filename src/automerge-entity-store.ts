@@ -1,4 +1,8 @@
-import type { EntityState } from "@onsetsoftware/mutable-js";
+import type {
+  EntityState,
+  GetIdType,
+  HasId,
+} from "@onsetsoftware/entity-state";
 import {
   addEntities,
   addEntity,
@@ -15,7 +19,7 @@ type EntityTitles = {
 
 export class AutomergeEntityStore<
   U,
-  T extends { id: string; [key: string]: any },
+  T extends HasId<T>,
 > extends AutomergeDerivedStore<EntityState<T>, U> {
   readonly #titles: EntityTitles | undefined;
   constructor(
@@ -87,10 +91,10 @@ export class AutomergeEntityStore<
     );
   }
 
-  delete(id: string, message?: string) {
+  delete(id: GetIdType<T>, message?: string) {
     this.change(
       (doc) => {
-        deleteEntityList(doc as EntityState<T>, id);
+        deleteEntityList(doc, id);
       },
       {
         message:
@@ -100,11 +104,11 @@ export class AutomergeEntityStore<
     );
   }
 
-  deleteMany(ids: string[], message?: string) {
+  deleteMany(ids: GetIdType<T>[], message?: string) {
     this.change(
       (doc) => {
         ids.forEach((id) => {
-          deleteEntityList(doc as EntityState<T>, id);
+          deleteEntityList<T>(doc, id);
         });
       },
       {
