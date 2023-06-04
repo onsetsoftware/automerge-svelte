@@ -2,10 +2,10 @@ import { HasId } from "@onsetsoftware/entity-state";
 import { inputAction } from "./input-action";
 import { BindEntityOptions } from "./types/bind-entity-options.type";
 
-export function bindEntityChecked<U, T extends HasId<T>>(
-  node: HTMLInputElement,
-  options: BindEntityOptions<U, T>,
-) {
+export function bindEntityChecked<
+  U,
+  T extends HasId<T> & { [K in keyof T]: T[K] },
+>(node: HTMLInputElement, options: BindEntityOptions<U, T>) {
   return inputAction(
     {
       subscribe: (node, { store, property, ids }) => {

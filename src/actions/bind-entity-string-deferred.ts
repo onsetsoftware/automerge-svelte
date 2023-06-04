@@ -7,10 +7,10 @@ import { inputAction } from "./input-action";
 import { BindEntityOptions } from "./types/bind-entity-options.type";
 import { InputElement } from "./types/input-elements.type";
 
-export function bindEntityStringDeferred<U, T extends HasId<T>>(
-  node: InputElement,
-  options: BindEntityOptions<U, T>,
-) {
+export function bindEntityStringDeferred<
+  U,
+  T extends HasId<T> & { [K in keyof T]: T[K] },
+>(node: InputElement, options: BindEntityOptions<U, T>) {
   return inputAction(
     {
       subscribe: (node, { store, ids, property }) => {

@@ -4,10 +4,10 @@ import { inputAction } from "./input-action";
 import { BindEntityOptions } from "./types/bind-entity-options.type";
 import { FormControlElement } from "./types/input-elements.type";
 
-export function bindEntityValueDeferred<U, T extends HasId<T>>(
-  node: FormControlElement,
-  options: BindEntityOptions<U, T>,
-) {
+export function bindEntityValueDeferred<
+  U,
+  T extends HasId<T> & { [K in keyof T]: T[K] },
+>(node: FormControlElement, options: BindEntityOptions<U, T>) {
   return inputAction(
     {
       subscribe: (node, { store, ids, property }) => {
