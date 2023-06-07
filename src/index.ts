@@ -7,6 +7,7 @@ export { bindString } from "./actions/bind-string";
 export { bindStringDeferred } from "./actions/bind-string-deferred";
 export { bindEntityStringDeferred } from "./actions/bind-entity-string-deferred";
 export { bindEntityValueDeferred } from "./actions/bind-entity-value-deferred";
+export { bindEntityIntDeferred } from "./actions/bind-entity-int-deferred";
 export { bindEntityChecked } from "./actions/bind-entity-checked";
 
 export { AutomergeSvelteStore } from "./automerge-svelte-store";

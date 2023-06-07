@@ -1,6 +1,7 @@
 import { HasId } from "@onsetsoftware/entity-state";
 import { inputAction } from "./input-action";
 import { BindEntityOptions } from "./types/bind-entity-options.type";
+import { PathValue, getByPath, setByPath } from "dot-path-value";
 
 export function bindEntityChecked<
   U,
@@ -8,24 +9,31 @@ export function bindEntityChecked<
 >(node: HTMLInputElement, options: BindEntityOptions<U, T>) {
   return inputAction(
     {
-      subscribe: (node, { store, property, ids }) => {
+      subscribe: (node, { store, path, ids }) => {
         return store.subscribe((doc) => {
-          const values = new Set(ids.map((id) => doc.entities[id]?.[property]));
+          const values = new Set(
+            ids.map((id) => getByPath(doc.entities[id], path)),
+          );
 
           if (values.size === 1) {
-            node.checked = Boolean(doc.entities[ids[0]]?.[property]);
+            node.checked = Boolean(getByPath(doc.entities[ids[0]], path));
           } else {
             node.checked = false;
             node.indeterminate = true;
           }
         });
       },
-      inputListener: (node, { store, ids, property, title }) => {
+      inputListener: (node, { store, ids, path, title }) => {
         store.change(
           (doc) => {
             ids.forEach((id) => {
-              // @ts-ignore
-              doc.entities[id][property] = node.checked;
+              setByPath(
+                // @ts-ignore
+                doc.entities[id],
+                path,
+                // @ts-ignore
+                node.checked as PathValue<T, typeof path>,
+              );
             });
           },
           title ? { message: `Update ${title}` } : {},

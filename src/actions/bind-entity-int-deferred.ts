@@ -1,16 +1,14 @@
-import { patch } from "@onsetsoftware/automerge-patcher";
 import { HasId } from "@onsetsoftware/entity-state";
-import { getStringPatches } from "../diff-to-patches";
 import { quickClone } from "../helpers/quick-clone";
 import { inputAction } from "./input-action";
 import { BindEntityOptions } from "./types/bind-entity-options.type";
-import { InputElement } from "./types/input-elements.type";
+import { FormControlElement } from "./types/input-elements.type";
 import { PathValue, getByPath, setByPath } from "dot-path-value";
 
-export function bindEntityStringDeferred<
+export function bindEntityIntDeferred<
   U,
   T extends HasId<T> & { [K in keyof T]: T[K] },
->(node: InputElement, options: BindEntityOptions<U, T>) {
+>(node: FormControlElement, options: BindEntityOptions<U, T>) {
   return inputAction(
     {
       subscribe: (node, { store, ids, path }) => {
@@ -34,27 +32,23 @@ export function bindEntityStringDeferred<
             setByPath(
               doc.entities[id],
               path,
-              node.value as PathValue<T, typeof path>,
+              parseInt(node.value || "0") as PathValue<T, typeof path>,
             );
           });
           return doc;
         });
       },
-      changeListener: (node, options) => {
-        const { store, ids, path, title } = options;
-
+      changeListener: (node, { store, ids, path, title }) => {
         store.change(
           (doc) => {
             ids.forEach((id) => {
-              const lastValue =
+              setByPath(
                 // @ts-ignore
-                (getByPath(doc.entities[ids[0]], path) as string) || "";
-              const patches = getStringPatches(String(lastValue), node.value);
-              patches.forEach((p) => {
-                p.path.unshift(...(path as string).split("."));
+                doc.entities[id],
+                path,
                 // @ts-ignore
-                patch(doc.entities[id], p);
-              });
+                parseInt(node.value || "0") as PathValue<T, typeof path>,
+              );
             });
           },
           title ? { message: `Update ${title}` } : {},

@@ -10,26 +10,26 @@
   },
   "devDependencies": {
     "@types/diff": "^5.0.2",
-    "typescript": "^4.9.4",
+    "typescript": "^5.0.0",
     "vite": "^4.1.0",
     "vite-plugin-dts": "^2.0.0",
-    "vite-plugin-externalize-deps": "^0.5.0",
+    "vite-plugin-externalize-deps": "^0.6.0",
     "vite-plugin-top-level-await": "^1.2.1",
     "vite-plugin-wasm": "^3.1.0",
-    "vitest": "^0.31.0"
+    "vitest": "^0.32.0"
   },
   "peerDependencies": {
     "automerge-repo": "0.0.52",
     "svelte": "^3.55.1"
   },
   "dependencies": {
-    "@automerge/automerge": "^2.0.3",
+    "@automerge/automerge": "2.0.3",
     "@onsetsoftware/automerge-patcher": "^0.7.0",
     "@onsetsoftware/automerge-store": "^0.7.0",
     "@onsetsoftware/mutable-js": "^0.4.0",
     "@onsetsoftware/entity-state": "^0.0.1",
     "diff": "^5.1.0",
-    "dot-path-value": "^0.0.9"
+    "dot-path-value": "^0.0.10"
   },
   "files": [
     "dist"
