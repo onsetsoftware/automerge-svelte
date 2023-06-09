@@ -23,10 +23,10 @@
     "svelte": "^3.55.1"
   },
   "dependencies": {
-    "@automerge/automerge": "2.0.3",
-    "@onsetsoftware/automerge-patcher": "^0.7.0",
-    "@onsetsoftware/automerge-store": "^0.7.0",
-    "@onsetsoftware/mutable-js": "^0.4.0",
+    "@automerge/automerge": "2.1.0-alpha.4",
+    "@onsetsoftware/automerge-patcher": "next",
+    "@onsetsoftware/automerge-store": "next",
+    "@onsetsoftware/mutable-js": "next",
     "@onsetsoftware/entity-state": "^0.0.1",
     "diff": "^5.1.0",
     "dot-path-value": "^0.0.10"

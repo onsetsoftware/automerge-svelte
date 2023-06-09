@@ -1,5 +1,5 @@
 import { Counter, Text } from "@automerge/automerge";
-import { EntityState } from "@onsetsoftware/mutable-js";
+import { EntityState } from "@onsetsoftware/entity-state";
 
 export type DocumentType = {
   string: string;

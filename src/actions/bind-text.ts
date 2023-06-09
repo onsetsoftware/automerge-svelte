@@ -1,6 +1,4 @@
-import { Extend } from "@automerge/automerge";
 import { patch } from "@onsetsoftware/automerge-patcher";
-import type { Path } from "dot-path-value";
 import { getByPath } from "dot-path-value";
 import { getTextPatches } from "../diff-to-patches";
 import { inputAction } from "./input-action";
@@ -21,7 +19,7 @@ export function bindText<T extends Record<string, any>>(
       inputListener: (node, { store, path, title }) => {
         store.change(
           (doc) => {
-            const lastValue = getByPath(doc, path as Path<Extend<T>>);
+            const lastValue = getByPath(doc, path);
             const patches = getTextPatches(String(lastValue), node.value);
 
             patches.forEach((p) => {

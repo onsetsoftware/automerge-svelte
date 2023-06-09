@@ -1,5 +1,5 @@
 import type { AutomergeSvelteStore } from "./automerge-svelte-store";
-import type { ChangeFn, ChangeOptions, Extend } from "@automerge/automerge";
+import type { ChangeFn, ChangeOptions } from "@automerge/automerge";
 import {
   type Readable,
   type Updater,
@@ -36,7 +36,7 @@ export class AutomergeDerivedStore<T, U>
 
   public change = (callback: ChangeFn<T>, options: ChangeOptions<T> = {}) => {
     const changed = this.#rootStore.change((doc) => {
-      callback(this.#discriminator(doc as U) as Extend<T>);
+      callback(this.#discriminator(doc as U));
     }, options as unknown as ChangeOptions<U>);
     return this.#discriminator(changed);
   };

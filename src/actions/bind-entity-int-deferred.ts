@@ -43,10 +43,8 @@ export function bindEntityIntDeferred<
           (doc) => {
             ids.forEach((id) => {
               setByPath(
-                // @ts-ignore
                 doc.entities[id],
                 path,
-                // @ts-ignore
                 parseInt(node.value || "0") as PathValue<T, typeof path>,
               );
             });

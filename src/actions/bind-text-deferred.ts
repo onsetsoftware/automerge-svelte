@@ -1,4 +1,3 @@
-import { Extend } from "@automerge/automerge";
 import { patch } from "@onsetsoftware/automerge-patcher";
 import type { Path, PathValue } from "dot-path-value";
 import { getByPath, setByPath } from "dot-path-value";
@@ -30,7 +29,7 @@ export function bindTextDeferred<T extends Record<string, any>>(
       changeListener: (node, { store, path, title }) => {
         store.change(
           (doc) => {
-            const lastValue = getByPath(doc, path as Path<Extend<T>>);
+            const lastValue = getByPath(doc, path);
             const patches = getTextPatches(String(lastValue), node.value);
 
             patches.forEach((p) => {

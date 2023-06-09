@@ -28,10 +28,8 @@ export function bindEntityChecked<
           (doc) => {
             ids.forEach((id) => {
               setByPath(
-                // @ts-ignore
                 doc.entities[id],
                 path,
-                // @ts-ignore
                 node.checked as PathValue<T, typeof path>,
               );
             });

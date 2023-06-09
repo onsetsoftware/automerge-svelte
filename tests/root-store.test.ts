@@ -4,7 +4,7 @@ import {
   AutomergeStore,
 } from "@onsetsoftware/automerge-store";
 import { documentData, type DocumentType } from "./data";
-import { from, type Extend } from "@automerge/automerge";
+import { from } from "@automerge/automerge";
 import { AutomergeSvelteStore } from "../src/automerge-svelte-store";
 import { get } from "svelte/store";
 import { Repo } from "automerge-repo";
@@ -101,7 +101,7 @@ describe("root store", () => {
         done();
       });
 
-      store.change((doc: Extend<DocumentType>) => {
+      store.change((doc) => {
         doc.text.insertAt(6, "there ");
       });
     }));
@@ -132,7 +132,7 @@ describe("root store", () => {
 
       sub2();
 
-      store.change((doc: Extend<DocumentType>) => {
+      store.change((doc) => {
         doc.text.insertAt(6, "there ");
       });
     }));

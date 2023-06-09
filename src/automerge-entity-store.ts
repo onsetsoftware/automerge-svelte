@@ -6,7 +6,7 @@ import type {
 import {
   addEntities,
   addEntity,
-  deleteEntityList,
+  deleteEntity,
   updateEntity,
 } from "@onsetsoftware/mutable-js";
 import { AutomergeDerivedStore } from "./automerge-derived-store";
@@ -94,7 +94,7 @@ export class AutomergeEntityStore<
   delete(id: GetIdType<T>, message?: string) {
     this.change(
       (doc) => {
-        deleteEntityList(doc, id);
+        deleteEntity(doc, id);
       },
       {
         message:
@@ -108,7 +108,7 @@ export class AutomergeEntityStore<
     this.change(
       (doc) => {
         ids.forEach((id) => {
-          deleteEntityList<T>(doc, id);
+          deleteEntity<T>(doc, id);
         });
       },
       {

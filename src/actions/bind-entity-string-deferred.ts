@@ -47,12 +47,10 @@ export function bindEntityStringDeferred<
           (doc) => {
             ids.forEach((id) => {
               const lastValue =
-                // @ts-ignore
                 (getByPath(doc.entities[ids[0]], path) as string) || "";
               const patches = getStringPatches(String(lastValue), node.value);
               patches.forEach((p) => {
                 p.path.unshift(...(path as string).split("."));
-                // @ts-ignore
                 patch(doc.entities[id], p);
               });
             });

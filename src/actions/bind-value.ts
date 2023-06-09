@@ -1,4 +1,3 @@
-import type { Extend } from "@automerge/automerge";
 import type { Path, PathValue } from "dot-path-value";
 import { getByPath, setByPath } from "dot-path-value";
 import { inputAction } from "./input-action";
@@ -19,11 +18,7 @@ export function bindValue<T extends Record<string, any>>(
       inputListener: (node, { store, path, title }) => {
         store.change(
           (doc) => {
-            setByPath(
-              doc,
-              path as Path<Extend<T>>,
-              node.value as PathValue<Extend<T>, Path<Extend<T>>>,
-            );
+            setByPath(doc, path, node.value as PathValue<T, Path<T>>);
           },
           title ? { message: `Update ${title}` } : {},
         );
