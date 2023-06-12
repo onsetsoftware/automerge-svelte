@@ -1,5 +1,5 @@
 import { patch } from "@onsetsoftware/automerge-patcher";
-import { getByPath } from "dot-path-value";
+import { PathValue, getByPath, setByPath } from "dot-path-value";
 import { getStringPatches } from "../diff-to-patches";
 import { inputAction } from "./input-action";
 import { BindOptions } from "./types/bind-options.type";
@@ -20,6 +20,11 @@ export function bindString<T extends Record<string, any>>(
         store.change(
           (doc) => {
             const lastValue = getByPath(doc, path);
+            if (lastValue === null || lastValue === undefined) {
+              setByPath(doc, path, node.value as PathValue<T, typeof path>);
+              return;
+            }
+
             const patches = getStringPatches(String(lastValue), node.value);
 
             patches.forEach((p) => {

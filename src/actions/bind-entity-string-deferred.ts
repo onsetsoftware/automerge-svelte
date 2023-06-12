@@ -46,8 +46,16 @@ export function bindEntityStringDeferred<
         store.change(
           (doc) => {
             ids.forEach((id) => {
-              const lastValue =
-                (getByPath(doc.entities[ids[0]], path) as string) || "";
+              const value = getByPath(doc.entities[id], path);
+              if (value === null || value === undefined) {
+                setByPath(
+                  doc.entities[id],
+                  path,
+                  node.value as PathValue<T, typeof path>,
+                );
+                return;
+              }
+              const lastValue = (value as string) || "";
               const patches = getStringPatches(String(lastValue), node.value);
               patches.forEach((p) => {
                 p.path.unshift(...(path as string).split("."));

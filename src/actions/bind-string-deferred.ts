@@ -30,6 +30,11 @@ export function bindStringDeferred<T extends Record<string, any>>(
         store.change(
           (doc) => {
             const lastValue = getByPath(doc, path);
+            if (lastValue === null || lastValue === undefined) {
+              setByPath(doc, path, node.value as PathValue<T, typeof path>);
+              return;
+            }
+
             const patches = getStringPatches(String(lastValue), node.value);
 
             patches.forEach((p) => {
