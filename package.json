@@ -1,7 +1,7 @@
 {
   "name": "@onsetsoftware/automerge-svelte",
   "description": "A svelte store and utilities for automerge",
-  "version": "0.7.0-alpha.1",
+  "version": "0.7.0-alpha.2",
   "type": "module",
   "scripts": {
     "build": "tsc && vite build",
@@ -20,11 +20,11 @@
     "vitest": "^0.32.0"
   },
   "peerDependencies": {
-    "automerge-repo": "0.0.52",
+    "automerge-repo": "0.0.56",
     "svelte": "^3.55.1"
   },
   "dependencies": {
-    "@automerge/automerge": "2.1.0-alpha.4",
+    "@automerge/automerge": "2.1.0-alpha.5",
     "@onsetsoftware/automerge-patcher": "next",
     "@onsetsoftware/automerge-store": "next",
     "@onsetsoftware/mutable-js": "next",
