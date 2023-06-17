@@ -1,5 +1,6 @@
 import { Unsubscriber } from "svelte/store";
 import { FormControlElement } from "./types/input-elements.type";
+import { tick } from "svelte";
 
 type Actions<T, U extends FormControlElement = FormControlElement> = {
   subscribe: (node: U, options: T) => Unsubscriber;
@@ -40,8 +41,10 @@ export const inputAction = <
   return {
     update(value: T) {
       unsubscribe();
-      options = value;
-      unsubscribe = subscribe();
+      setTimeout(() => {
+        options = value;
+        unsubscribe = subscribe();
+      });
     },
     destroy() {
       unsubscribe();
