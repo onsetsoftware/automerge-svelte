@@ -7,7 +7,7 @@ import { documentData, type DocumentType } from "./data";
 import { from } from "@automerge/automerge";
 import { AutomergeSvelteStore } from "../src/automerge-svelte-store";
 import { get } from "svelte/store";
-import { Repo } from "automerge-repo";
+import { Repo } from "@automerge/automerge-repo";
 
 describe("root store", () => {
   let store: AutomergeStore<DocumentType>,
