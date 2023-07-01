@@ -13,8 +13,8 @@
     "@types/diff": "^5.0.2",
     "typescript": "^5.0.0",
     "vite": "^4.1.0",
-    "vite-plugin-dts": "^2.0.0",
-    "vite-plugin-externalize-deps": "^0.6.0",
+    "vite-plugin-dts": "^3.0.0",
+    "vite-plugin-externalize-deps": "^0.7.0",
     "vite-plugin-top-level-await": "^1.2.1",
     "vite-plugin-wasm": "^3.1.0",
     "vitest": "^0.32.0"
@@ -34,12 +34,12 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/automerge-svelte.umd.js",
-  "module": "./dist/automerge-svelte.es.js",
+  "main": "./dist/automerge-svelte.umd.cjs",
+  "module": "./dist/automerge-svelte.js",
   "exports": {
     ".": {
-      "import": "./dist/automerge-svelte.es.js",
-      "require": "./dist/automerge-svelte.umd.js",
+      "import": "./dist/automerge-svelte.js",
+      "require": "./dist/automerge-svelte.umd.cjs",
       "types": "./dist/types/index.d.ts"
     }
   },

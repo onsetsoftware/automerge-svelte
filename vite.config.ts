@@ -16,7 +16,7 @@ export default defineConfig({
     wasm(),
     dts({
       entryRoot: resolvePath("src"),
-      outputDir: resolvePath("dist/types"),
+      outDir: resolvePath("dist/types"),
     }),
   ],
   optimizeDeps: {
@@ -27,7 +27,7 @@ export default defineConfig({
     lib: {
       entry: resolvePath("src/index.ts"),
       name: "AutomergeSvelte",
-      fileName: (format) => `automerge-svelte.${format}.js`,
+      fileName: `automerge-svelte`,
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
