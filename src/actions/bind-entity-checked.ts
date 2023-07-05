@@ -17,6 +17,7 @@ export function bindEntityChecked<
 
           if (values.size === 1) {
             node.checked = Boolean(getByPath(doc.entities[ids[0]], path));
+            node.indeterminate = false;
           } else {
             node.checked = false;
             node.indeterminate = true;
