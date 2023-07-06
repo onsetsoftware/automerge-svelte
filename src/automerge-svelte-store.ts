@@ -104,7 +104,7 @@ export class AutomergeSvelteStore<T>
     });
   }
 
-  transaction(changes: () => void, message?: string) {
+  transaction(changes: () => void | string, message?: string) {
     this.#store?.transaction(changes, message);
   }
 
