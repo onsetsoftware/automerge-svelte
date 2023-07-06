@@ -12,7 +12,7 @@ import {
 import { AutomergeDerivedStore } from "./automerge-derived-store";
 import type { AutomergeSvelteStore } from "./automerge-svelte-store";
 
-type EntityTitles = {
+export type EntityTitles = {
   singular: string;
   plural: string;
 };
