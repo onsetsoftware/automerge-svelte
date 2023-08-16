@@ -70,7 +70,7 @@ describe("root store", () => {
       Object.assign(doc, documentData);
     });
 
-    const found = repo.find<DocumentType>(handle.documentId);
+    const found = repo.find<DocumentType>(handle.url);
 
     const store = new AutomergeRepoStore<DocumentType>(found);
     const rootStore = new AutomergeSvelteStore(store);
@@ -210,7 +210,7 @@ describe("root store", () => {
       });
 
       rootStore.swapStore(
-        new AutomergeStore<DocumentType>("test2", replacementDoc),
+        new AutomergeStore<DocumentType>("test2", replacementDoc)
       );
     }));
 
@@ -240,7 +240,7 @@ describe("root store", () => {
 
       setTimeout(() => {
         rootStore.swapStore(
-          new AutomergeStore<DocumentType>("test2", replacementDoc),
+          new AutomergeStore<DocumentType>("test2", replacementDoc)
         );
       }, 100);
     }));
@@ -253,7 +253,7 @@ describe("root store", () => {
     const replacementDoc = from<DocumentType>(newData);
 
     rootStore.swapStore(
-      new AutomergeStore<DocumentType>("test2", replacementDoc),
+      new AutomergeStore<DocumentType>("test2", replacementDoc)
     );
 
     rootStore.change((doc) => {
