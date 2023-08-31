@@ -6,11 +6,13 @@ import path from "path";
 import dts from "vite-plugin-dts";
 import topLevelAwait from "vite-plugin-top-level-await";
 import { externalizeDeps } from "vite-plugin-externalize-deps";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
 
 const resolvePath = (str: string) => path.resolve(__dirname, str);
 
 export default defineConfig({
   plugins: [
+    svelte(),
     externalizeDeps(),
     topLevelAwait(),
     wasm(),

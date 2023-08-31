@@ -1,7 +1,7 @@
 {
   "name": "@onsetsoftware/automerge-svelte",
   "description": "A svelte store and utilities for automerge",
-  "version": "0.7.0-alpha.11",
+  "version": "0.7.0-beta.0",
   "type": "module",
   "scripts": {
     "build": "tsc && vite build",
@@ -28,6 +28,7 @@
     "@onsetsoftware/automerge-patcher": "next",
     "@onsetsoftware/automerge-store": "next",
     "@onsetsoftware/mutable-js": "next",
+    "@sveltejs/vite-plugin-svelte": "^2.4.5",
     "diff": "^5.1.0",
     "dot-path-value": "^0.0.10"
   },

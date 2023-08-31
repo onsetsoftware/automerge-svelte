@@ -4,7 +4,7 @@ import {
   AutomergeStore,
 } from "@onsetsoftware/automerge-store";
 import { documentData, type DocumentType } from "./data";
-import { from } from "@automerge/automerge";
+import { type Doc, from } from "@automerge/automerge";
 import { AutomergeSvelteStore } from "../src/automerge-svelte-store";
 import { get } from "svelte/store";
 import { Repo } from "@automerge/automerge-repo";
@@ -65,9 +65,18 @@ describe("root store", () => {
       network: [],
     });
 
-    const handle = repo.create<DocumentType>();
-    handle.change((doc) => {
-      Object.assign(doc, documentData);
+    const data = {
+      ...documentData,
+      text: "hello world",
+      object: {
+        ...documentData.object,
+        text: "hello world",
+      },
+    };
+
+    const handle = repo.create<typeof data>();
+    handle.change((doc: Doc<typeof data>) => {
+      Object.assign(doc, data);
     });
 
     const found = repo.find<DocumentType>(handle.url);
@@ -81,7 +90,7 @@ describe("root store", () => {
       rootStore.ready.subscribe((ready) => {
         if (!ready) return;
 
-        expect(rootStore.get()).toEqual(documentData);
+        expect(rootStore.get()).toEqual(data);
         done();
       });
     });
