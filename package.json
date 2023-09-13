@@ -17,17 +17,17 @@
     "vite-plugin-externalize-deps": "^0.7.0",
     "vite-plugin-top-level-await": "^1.2.1",
     "vite-plugin-wasm": "^3.1.0",
-    "vitest": "^0.32.0"
+    "vitest": "^0.34.0"
   },
   "peerDependencies": {
     "@automerge/automerge-repo": "next",
     "svelte": "^3.55.1"
   },
   "dependencies": {
-    "@automerge/automerge": "next",
-    "@onsetsoftware/automerge-patcher": "next",
-    "@onsetsoftware/automerge-store": "next",
-    "@onsetsoftware/mutable-js": "next",
+    "@automerge/automerge": "^2.1.0",
+    "@onsetsoftware/automerge-patcher": "^0.8.0",
+    "@onsetsoftware/automerge-store": "^0.8.0",
+    "@onsetsoftware/mutable-js": "^0.5.0",
     "@sveltejs/vite-plugin-svelte": "^2.4.5",
     "diff": "^5.1.0",
     "dot-path-value": "^0.0.10"
