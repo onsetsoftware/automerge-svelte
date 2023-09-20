@@ -1,5 +1,5 @@
 import type { ChangeFn, ChangeOptions, Doc } from "@automerge/automerge";
-import type { AutomergeStore } from "@onsetsoftware/automerge-store";
+import type { AutomergeStore, UndoRedo } from "@onsetsoftware/automerge-store";
 import {
   derived,
   Subscriber,
@@ -19,7 +19,7 @@ export class AutomergeSvelteStore<T>
   ready: Readable<boolean> = derived(this.#storeReady, (ready) => ready);
 
   #subscribers: number = 0;
-  #unSubscriber: () => void = () => {};
+  #unSubscriber: () => void = () => { };
 
   #unSubscribe: () => void = () => {
     this.#unSubscriber();
@@ -83,7 +83,7 @@ export class AutomergeSvelteStore<T>
     this.#unSubscriber =
       this.#store?.subscribe((doc: Doc<T>) => {
         this.#state.set(doc);
-      }) ?? (() => {});
+      }) ?? (() => { });
   }
 
   private setStoreReady() {
@@ -106,6 +106,10 @@ export class AutomergeSvelteStore<T>
 
   transaction(changes: () => void | string, message?: string) {
     this.#store?.transaction(changes, message);
+  }
+
+  pushUndoRedo(undoRedo: UndoRedo) {
+    this.#store?.pushUndoRedo(undoRedo);
   }
 
   undo() {
