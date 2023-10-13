@@ -9,6 +9,9 @@ import { AutomergeSvelteStore } from "../src/automerge-svelte-store";
 import { get } from "svelte/store";
 import { Repo } from "@automerge/automerge-repo";
 
+export const pause = (t = 0) =>
+  new Promise<void>((resolve) => setTimeout(() => resolve(), t));
+
 describe("root store", () => {
   let store: AutomergeStore<DocumentType>,
     rootStore: AutomergeSvelteStore<DocumentType>;
@@ -172,7 +175,7 @@ describe("root store", () => {
   });
 
   test("changes to the store can be undone", () => {
-    return new Promise((done: Function) => {
+    return new Promise(async (done: Function) => {
       let calls = 0;
       rootStore.subscribe((doc) => {
         if (calls === 0) {
@@ -193,6 +196,8 @@ describe("root store", () => {
           doc.array.push("looking");
         });
       });
+
+      await pause(10);
 
       rootStore.undo();
     });
