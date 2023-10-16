@@ -1,7 +1,7 @@
 {
   "name": "@onsetsoftware/automerge-svelte",
   "description": "A svelte store and utilities for automerge",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "type": "module",
   "scripts": {
     "build": "tsc && vite build",
@@ -21,7 +21,7 @@
   },
   "peerDependencies": {
     "@automerge/automerge-repo": "^1.0.0",
-    "svelte": "^3.55.1"
+    "svelte": "^4.0.0"
   },
   "dependencies": {
     "@automerge/automerge": "^2.1.0",
