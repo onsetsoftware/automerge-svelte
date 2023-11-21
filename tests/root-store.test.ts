@@ -118,6 +118,24 @@ describe("root store", () => {
       });
     }));
 
+  test("a change contains patches", () =>
+    new Promise<void>((done) => {
+      let initialRun = true;
+      rootStore.patches.subscribe(({ patches }) => {
+        if (initialRun) {
+          initialRun = false;
+          return;
+        }
+
+        expect(patches).toHaveLength(1);
+        done();
+      });
+
+      store.change((doc) => {
+        doc.text.insertAt(6, "there ");
+      });
+    }));
+
   test("root stores can be unsubscribed from", () =>
     new Promise<void>((done) => {
       let initialRun = true;
@@ -224,7 +242,7 @@ describe("root store", () => {
       });
 
       rootStore.swapStore(
-        new AutomergeStore<DocumentType>("test2", replacementDoc)
+        new AutomergeStore<DocumentType>("test2", replacementDoc),
       );
     }));
 
@@ -254,7 +272,7 @@ describe("root store", () => {
 
       setTimeout(() => {
         rootStore.swapStore(
-          new AutomergeStore<DocumentType>("test2", replacementDoc)
+          new AutomergeStore<DocumentType>("test2", replacementDoc),
         );
       }, 100);
     }));
@@ -267,7 +285,7 @@ describe("root store", () => {
     const replacementDoc = from<DocumentType>(newData);
 
     rootStore.swapStore(
-      new AutomergeStore<DocumentType>("test2", replacementDoc)
+      new AutomergeStore<DocumentType>("test2", replacementDoc),
     );
 
     rootStore.change((doc) => {

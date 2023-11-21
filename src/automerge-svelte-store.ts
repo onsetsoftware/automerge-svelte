@@ -1,5 +1,9 @@
 import type { ChangeFn, ChangeOptions, Doc } from "@automerge/automerge";
-import type { AutomergeStore, UndoRedo } from "@onsetsoftware/automerge-store";
+import type {
+  AutomergeStore,
+  UndoRedo,
+  PatchData,
+} from "@onsetsoftware/automerge-store";
 import {
   derived,
   Subscriber,
@@ -7,6 +11,7 @@ import {
   type Readable,
   type Updater,
   type Writable,
+  readable,
 } from "svelte/store";
 import type { AutomergeSvelteStore as AutomergeSvelteStoreType } from "./automerge-svelte-store.type";
 
@@ -39,6 +44,29 @@ export class AutomergeSvelteStore<T>
     store?.onReady(() => {
       this.setStoreReady();
     });
+  }
+
+  get patches() {
+    return readable<PatchData<T>>(
+      {
+        patches: [],
+        patchInfo: {
+          before: {} as Doc<T>,
+          after: {} as Doc<T>,
+          source: "change",
+        },
+      },
+      (set) => {
+        const unsubscribe =
+          this.#store?.subscribe((_, patchData) => {
+            set(patchData);
+          }) || (() => { });
+
+        return () => {
+          unsubscribe();
+        };
+      },
+    );
   }
 
   get id() {
