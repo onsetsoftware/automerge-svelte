@@ -17,7 +17,7 @@ export function getStringPatches(old: string, updated: string) {
   return diffToStringPatches(diffChars(old, updated));
 }
 
-function diffToTextPatches(changes: Change[]): TextPatch[] {
+export function diffToTextPatches(changes: Change[]): TextPatch[] {
   let index = 0;
   return changes.reduce((acc: TextPatch[], change) => {
     if (change.removed) {

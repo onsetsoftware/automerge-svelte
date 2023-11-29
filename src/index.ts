@@ -1,3 +1,9 @@
+export {
+  diffToStringPatches,
+  diffToTextPatches,
+  getTextPatches,
+  getStringPatches,
+} from "./diff-to-patches";
 export { bindChecked } from "./actions/bind-checked";
 export { bindEntityChecked } from "./actions/bind-entity-checked";
 export { bindEntityIntDeferred } from "./actions/bind-entity-int-deferred";
