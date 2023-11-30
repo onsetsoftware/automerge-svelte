@@ -6,10 +6,10 @@ import {
   type Writable,
   writable,
 } from "svelte/store";
-import type { AutomergeSvelteStore as AutomergeSvelteStoreType } from "./automerge-svelte-store.type";
+import type { AutomergeSvelteStoreInterface } from "./automerge-svelte-store.type";
 
 export class AutomergeDerivedStore<T, U>
-  implements Readable<T>, AutomergeSvelteStoreType<T>
+  implements Readable<T>, AutomergeSvelteStoreInterface<T>
 {
   #rootStore: AutomergeSvelteStore<U>;
   #state: Writable<T>;
@@ -35,9 +35,12 @@ export class AutomergeDerivedStore<T, U>
   }
 
   public change = (callback: ChangeFn<T>, options: ChangeOptions<T> = {}) => {
-    const changed = this.#rootStore.change((doc) => {
-      callback(this.#discriminator(doc as U));
-    }, options as unknown as ChangeOptions<U>);
+    const changed = this.#rootStore.change(
+      (doc) => {
+        callback(this.#discriminator(doc as U));
+      },
+      options as unknown as ChangeOptions<U>,
+    );
     return this.#discriminator(changed);
   };
 

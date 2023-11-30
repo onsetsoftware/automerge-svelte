@@ -13,10 +13,10 @@ import {
   type Writable,
   readable,
 } from "svelte/store";
-import type { AutomergeSvelteStore as AutomergeSvelteStoreType } from "./automerge-svelte-store.type";
+import type { AutomergeSvelteStoreInterface } from "./automerge-svelte-store.type";
 
 export class AutomergeSvelteStore<T>
-  implements Readable<T>, AutomergeSvelteStoreType<T>
+  implements Readable<T>, AutomergeSvelteStoreInterface<T>
 {
   #store: AutomergeStore<T> | null;
   #state: Writable<T | null>;
@@ -24,7 +24,7 @@ export class AutomergeSvelteStore<T>
   ready: Readable<boolean> = derived(this.#storeReady, (ready) => ready);
 
   #subscribers: number = 0;
-  #unSubscriber: () => void = () => { };
+  #unSubscriber: () => void = () => {};
 
   #unSubscribe: () => void = () => {
     this.#unSubscriber();
@@ -60,7 +60,7 @@ export class AutomergeSvelteStore<T>
         const unsubscribe =
           this.#store?.subscribe((_, patchData) => {
             set(patchData);
-          }) || (() => { });
+          }) || (() => {});
 
         return () => {
           unsubscribe();
@@ -87,7 +87,7 @@ export class AutomergeSvelteStore<T>
         this.#subscribers--;
         subscription();
       };
-    }) as AutomergeSvelteStoreType<T>["subscribe"];
+    }) as AutomergeSvelteStoreInterface<T>["subscribe"];
   }
 
   swapStore(store: AutomergeStore<T>) {
@@ -111,7 +111,7 @@ export class AutomergeSvelteStore<T>
     this.#unSubscriber =
       this.#store?.subscribe((doc: Doc<T>) => {
         this.#state.set(doc);
-      }) ?? (() => { });
+      }) ?? (() => {});
   }
 
   private setStoreReady() {
