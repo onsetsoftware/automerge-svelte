@@ -1,5 +1,5 @@
-import { from } from "@automerge/automerge";
 import type { Patch } from "@automerge/automerge";
+import { from } from "@automerge/automerge";
 import { patch } from "@onsetsoftware/automerge-patcher";
 import { AutomergeStore } from "@onsetsoftware/automerge-store";
 import { get } from "svelte/store";
@@ -106,7 +106,7 @@ describe("root store", () => {
 
       const singleValueStore = new AutomergeDerivedStore(
         rootStore,
-        (doc) => doc.object?.hello
+        (doc) => doc.object?.hello,
       );
       singleValueStore.subscribe((hello) => {
         if (initialRun) {
