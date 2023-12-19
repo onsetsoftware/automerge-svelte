@@ -1,10 +1,12 @@
 import { Unsubscriber } from "svelte/store";
+import { equalArrays } from "../helpers/equal-arrays";
 import { FormControlElement } from "./types/input-elements.type";
 
 type Actions<T, U extends FormControlElement = FormControlElement> = {
   subscribe: (node: U, options: T) => Unsubscriber;
   inputListener: (node: U, options: T) => void;
   changeListener?: (node: U, options: T) => void;
+  onUpdate?: (node: U, previousOptions: T, newOptions: T) => void;
 };
 
 export const inputAction = <
@@ -38,12 +40,13 @@ export const inputAction = <
   node.addEventListener("change", changeListener);
 
   return {
-    update(value: T) {
+    update(newOptions: T) {
+      if (actions.onUpdate) {
+        actions.onUpdate(node, options, newOptions);
+      }
       unsubscribe();
-      setTimeout(() => {
-        options = value;
-        unsubscribe = subscribe();
-      });
+      options = newOptions;
+      unsubscribe = subscribe();
     },
     destroy() {
       unsubscribe();

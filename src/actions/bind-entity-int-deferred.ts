@@ -4,6 +4,7 @@ import { inputAction } from "./input-action";
 import { BindEntityOptions } from "./types/bind-entity-options.type";
 import { FormControlElement } from "./types/input-elements.type";
 import { PathValue, getByPath, setByPath } from "dot-path-value";
+import { equalArrays } from "../helpers/equal-arrays";
 
 export function bindEntityIntDeferred<
   U,
@@ -42,15 +43,27 @@ export function bindEntityIntDeferred<
         store.change(
           (doc) => {
             ids.forEach((id) => {
-              setByPath(
-                doc.entities[id],
-                path,
-                parseInt(node.value || "0") as PathValue<T, typeof path>,
-              );
+              const value = getByPath(doc.entities[id], path);
+
+              if (node.value !== value) {
+                setByPath(
+                  doc.entities[id],
+                  path,
+                  parseInt(node.value || "0") as PathValue<T, typeof path>,
+                );
+              }
             });
           },
           title ? { message: `Update ${title}` } : {},
         );
+      },
+      onUpdate: function (node, previousOptions, newOptions) {
+        if (
+          !equalArrays(previousOptions.ids, newOptions.ids) &&
+          this.changeListener
+        ) {
+          this.changeListener(node, previousOptions);
+        }
       },
     },
     node,
