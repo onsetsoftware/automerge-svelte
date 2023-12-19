@@ -1,5 +1,4 @@
 import { Unsubscriber } from "svelte/store";
-import { equalArrays } from "../helpers/equal-arrays";
 import { FormControlElement } from "./types/input-elements.type";
 
 type Actions<T, U extends FormControlElement = FormControlElement> = {
