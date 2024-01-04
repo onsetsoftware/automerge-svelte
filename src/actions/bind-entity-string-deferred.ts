@@ -12,6 +12,7 @@ export function bindEntityStringDeferred<
   U,
   T extends HasId<T> & { [K in keyof T]: T[K] },
 >(node: InputElement, options: BindEntityOptions<U, T>) {
+  let changed = false;
   return inputAction(
     {
       subscribe: (node, { store, ids, path }) => {
@@ -29,6 +30,7 @@ export function bindEntityStringDeferred<
         });
       },
       inputListener: (node, { store, ids, path }) => {
+        changed = true;
         store.localChange((doc) => {
           doc = quickClone(doc);
           ids.forEach((id) => {
@@ -43,6 +45,10 @@ export function bindEntityStringDeferred<
       },
       changeListener: (node, options) => {
         const { store, ids, path, title } = options;
+
+        if (!changed) {
+          return;
+        }
 
         store.change(
           (doc) => {
@@ -66,6 +72,8 @@ export function bindEntityStringDeferred<
           },
           title ? { message: `Update ${title}` } : {},
         );
+
+        changed = false;
       },
       onUpdate: function (node, previousOptions, newOptions) {
         if (
