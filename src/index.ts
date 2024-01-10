@@ -17,6 +17,8 @@ export { bindTextDeferred } from "./actions/bind-text-deferred";
 export { bindValue } from "./actions/bind-value";
 export { bindValueDeferred } from "./actions/bind-value-deferred";
 
+export { getEntitiesValue } from "./actions/utilities";
+
 export { AutomergeDerivedStore } from "./automerge-derived-store";
 export { AutomergeEntityStore } from "./automerge-entity-store";
 export { AutomergeSvelteStore } from "./automerge-svelte-store";
