@@ -1,4 +1,4 @@
 export interface AutomergeSvelteInput extends HTMLInputElement {
-  cancel: () => void;
+  reset: () => void;
   save: () => void;
 }

@@ -18,10 +18,13 @@ export function bindStringDeferred<T extends Record<string, any>>(
           node.value = getByPath(doc, path)?.toString() || "";
         });
       },
-      inputListener: (node, { store, path }) => {
+      inputListener: (node, { store, path }, reset) => {
+        const value =
+          reset && store.doc ? getByPath(store.doc, path) : node.value;
+
         store.localChange((doc) => {
           doc = quickClone(doc);
-          setByPath(doc, path, node.value as PathValue<T, Path<T>>);
+          setByPath(doc, path, value as PathValue<T, Path<T>>);
 
           return doc;
         });

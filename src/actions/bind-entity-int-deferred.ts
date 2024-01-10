@@ -5,6 +5,7 @@ import { BindEntityOptions } from "./types/bind-entity-options.type";
 import { FormControlElement } from "./types/input-elements.type";
 import { PathValue, getByPath, setByPath } from "dot-path-value";
 import { equalArrays } from "../helpers/equal-arrays";
+import { getEntitiesValue } from "./utilities";
 
 export function bindEntityIntDeferred<
   U,
@@ -15,20 +16,15 @@ export function bindEntityIntDeferred<
     {
       subscribe: (node, { store, ids, path }) => {
         return store.subscribe((doc) => {
-          const values = new Set(
-            ids.map((id) => getByPath(doc.entities[id], path)),
-          );
-
-          if (values.size === 1) {
-            node.value =
-              (getByPath(doc.entities[ids[0]], path) as string) || "";
-          } else {
-            node.value = "";
-          }
+          node.value = getEntitiesValue(doc, ids, path);
         });
       },
-      inputListener: (node, { store, ids, path }) => {
+      inputListener: (node, { store, ids, path }, reset) => {
         changed = true;
+
+        const value = reset
+          ? getEntitiesValue(store.get(), ids, path)
+          : node.value;
 
         store.localChange((doc) => {
           doc = quickClone(doc);
@@ -36,7 +32,7 @@ export function bindEntityIntDeferred<
             setByPath(
               doc.entities[id],
               path,
-              parseInt(node.value || "0") as PathValue<T, typeof path>,
+              parseInt(value || "0") as PathValue<T, typeof path>,
             );
           });
           return doc;

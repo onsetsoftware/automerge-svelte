@@ -144,6 +144,32 @@ Object.entries({
       expect(input.value).toBe(document.people.entities["2"][field].toString());
     });
 
+    test("inputs can be reset", async () => {
+      render(ActionsComponent, {
+        props: { manualSave: true, store: entityStore },
+      });
+
+      const user = userEvent.setup();
+      const input: AutomergeSvelteInput = screen.getByLabelText(label);
+
+      expect(input.value).toBe("");
+
+      const toType = field === "age" ? "22" : "Alex";
+
+      input.focus();
+      await user.type(input, toType);
+      expect(input.value).toBe(toType);
+
+      input.reset();
+      expect(input.value).toBe("");
+      expect(get(store).people.entities["1"][field]).toBe(
+        document.people.entities["1"][field],
+      );
+      expect(get(store).people.entities["2"][field]).toBe(
+        document.people.entities["2"][field],
+      );
+    });
+
     test("inputs marked as manualSave don't get written automatically", async () => {
       render(ActionsComponent, {
         props: { manualSave: true, store: entityStore },

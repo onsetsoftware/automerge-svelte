@@ -4,7 +4,7 @@ import { AutomergeSvelteInput } from "./types/automerge-svelte-input.type";
 
 type Actions<T, U extends FormControlElement = FormControlElement> = {
   subscribe: (node: U, options: T) => Unsubscriber;
-  inputListener: (node: U, options: T) => void;
+  inputListener: (node: U, options: T, reset?: boolean) => void;
   changeListener?: (node: U, options: T, forceWrite?: boolean) => void;
   onUpdate?: (node: U, previousOptions: T, newOptions: T) => void;
 };
@@ -38,6 +38,10 @@ export const inputAction = <
   };
 
   node.addEventListener("change", changeListener);
+
+  (node as AutomergeSvelteInput).reset = () => {
+    actions.inputListener(node, options, true);
+  };
 
   (node as AutomergeSvelteInput).save = () => {
     if (actions.changeListener) {

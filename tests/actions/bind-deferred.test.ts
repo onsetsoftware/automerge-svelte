@@ -73,6 +73,49 @@ describe("bind value/string deferred", async () => {
       expect(input.value).toBe("foo bar");
     });
 
+    test("inputs can be reset", async () => {
+      const user = userEvent.setup();
+      const input: AutomergeSvelteInput = screen.getByLabelText(label);
+
+      expect(input.value).toBe("foo");
+
+      await user.type(input, " bar");
+      expect(input.value).toBe("foo bar");
+
+      expect(get(store).data.value).toBe("foo bar");
+
+      expect(store.get()?.data.value).toBe("foo");
+      expect(root.doc?.data.value).toBe("foo");
+
+      input.reset();
+
+      expect(input.value).toBe("foo");
+      expect(get(store).data.value).toBe("foo");
+
+      expect(store.get()?.data.value).toBe("foo");
+      expect(root.doc?.data.value).toBe("foo");
+    });
+
+    test("inputs not marked as manualSave are saved when save is called", async () => {
+      const user = userEvent.setup();
+      const input: AutomergeSvelteInput = screen.getByLabelText(label);
+
+      expect(input.value).toBe("foo");
+
+      await user.type(input, " bar");
+      expect(input.value).toBe("foo bar");
+
+      expect(get(store).data.value).toBe("foo bar");
+
+      expect(store.get()?.data.value).toBe("foo");
+      expect(root.doc?.data.value).toBe("foo");
+
+      input.save();
+
+      expect(store.get()?.data.value).toBe("foo bar");
+      expect(root.doc?.data.value).toBe("foo bar");
+    });
+
     test("inputs marked as manualSave don't get written automatically", async () => {
       cleanup();
       render(ActionsComponent, {
