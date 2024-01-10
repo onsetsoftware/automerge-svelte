@@ -24,3 +24,5 @@ export { AutomergeSvelteStore } from "./automerge-svelte-store";
 export type { AutomergeSvelteStoreInterface } from "./automerge-svelte-store.type";
 
 export type { EntityTitles } from "./automerge-entity-store";
+
+export type { AutomergeSvelteInput } from "./actions/types/automerge-svelte-input.type";

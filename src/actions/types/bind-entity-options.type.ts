@@ -10,4 +10,5 @@ export type BindEntityOptions<
   ids: GetIdType<T>[];
   path: Path<T>;
   title?: string;
+  manualSave?: boolean;
 };

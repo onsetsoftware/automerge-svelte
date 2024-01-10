@@ -7,12 +7,16 @@ import dts from "vite-plugin-dts";
 import topLevelAwait from "vite-plugin-top-level-await";
 import { externalizeDeps } from "vite-plugin-externalize-deps";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
+import preprocess from "svelte-preprocess";
 
 const resolvePath = (str: string) => path.resolve(__dirname, str);
 
 export default defineConfig({
   plugins: [
-    svelte(),
+    svelte({
+      hot: !process.env.VITEST,
+      preprocess: preprocess(),
+    }),
     externalizeDeps(),
     topLevelAwait(),
     wasm(),
@@ -44,5 +48,9 @@ export default defineConfig({
       },
     },
   },
-  test: {},
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: ["./tests/setup-tests.ts"],
+  },
 });

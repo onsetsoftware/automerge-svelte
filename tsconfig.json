@@ -17,6 +17,7 @@
     "skipLibCheck": true,
     "outDir": "dist",
     "declaration": true,
+    "types": ["vitest/globals"]
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "src/main.ts"]

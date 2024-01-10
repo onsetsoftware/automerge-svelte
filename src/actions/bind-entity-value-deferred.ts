@@ -43,8 +43,8 @@ export function bindEntityValueDeferred<
           return doc;
         });
       },
-      changeListener: (node, { store, ids, path, title }) => {
-        if (!changed) {
+      changeListener: (node, { store, ids, path, title, manualSave }) => {
+        if (!changed || manualSave) {
           return;
         }
 

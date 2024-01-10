@@ -44,9 +44,9 @@ export function bindEntityStringDeferred<
         });
       },
       changeListener: (node, options) => {
-        const { store, ids, path, title } = options;
+        const { store, ids, path, title, manualSave } = options;
 
-        if (!changed) {
+        if (!changed || manualSave) {
           return;
         }
 
