@@ -1,12 +1,12 @@
 import { patch } from "@onsetsoftware/automerge-patcher";
-import { EntityState, HasId } from "@onsetsoftware/entity-state";
+import { HasId } from "@onsetsoftware/entity-state";
+import { PathValue, getByPath, setByPath } from "dot-path-value";
 import { getStringPatches } from "../diff-to-patches";
+import { equalArrays } from "../helpers/equal-arrays";
 import { quickClone } from "../helpers/quick-clone";
 import { inputAction } from "./input-action";
 import { BindEntityOptions } from "./types/bind-entity-options.type";
 import { InputElement } from "./types/input-elements.type";
-import { PathValue, getByPath, setByPath } from "dot-path-value";
-import { equalArrays } from "../helpers/equal-arrays";
 import { getEntitiesValue } from "./utilities";
 
 export function bindEntityStringDeferred<
