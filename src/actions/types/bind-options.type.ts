@@ -5,4 +5,5 @@ export type BindOptions<T extends Record<string, any>> = {
   store: AutomergeSvelteStore<T>;
   path: Path<T>;
   title?: string;
+  manualSave?: boolean;
 };

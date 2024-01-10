@@ -1,10 +1,10 @@
 import { next as A } from "@automerge/automerge";
 import { AutomergeStore } from "@onsetsoftware/automerge-store";
-import { render, screen } from "@testing-library/svelte";
+import { render, screen, cleanup } from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 import { get } from "svelte/store";
 import { beforeEach, describe, expect, test } from "vitest";
-import { AutomergeSvelteStore } from "../../src";
+import { AutomergeSvelteInput, AutomergeSvelteStore } from "../../src";
 import ActionsComponent from "./setup/ActionsComponent.svelte";
 import { document } from "./setup/document";
 import type { DocumentShape } from "./setup/document.type";
@@ -71,6 +71,51 @@ describe("bind value/string deferred", async () => {
       });
 
       expect(input.value).toBe("foo bar");
+    });
+
+    test("inputs marked as manualSave don't get written automatically", async () => {
+      cleanup();
+      render(ActionsComponent, {
+        props: { manualSave: true, store },
+      });
+      const user = userEvent.setup();
+      const input: HTMLInputElement = screen.getByLabelText(label);
+
+      await user.type(input, " bar");
+      expect(input.value).toBe("foo bar");
+
+      expect(get(store).data.value).toBe("foo bar");
+
+      expect(store.get()?.data.value).toBe("foo");
+      expect(root.doc?.data.value).toBe("foo");
+      input.blur();
+
+      expect(store.get()?.data.value).toBe("foo");
+      expect(root.doc?.data.value).toBe("foo");
+    });
+
+    test("inputs marked as manualSave are saved when save is called", async () => {
+      cleanup();
+      render(ActionsComponent, {
+        props: { manualSave: true, store },
+      });
+      const user = userEvent.setup();
+      const input: AutomergeSvelteInput = screen.getByLabelText(label);
+
+      expect(input.value).toBe("foo");
+
+      await user.type(input, " bar");
+      expect(input.value).toBe("foo bar");
+
+      expect(get(store).data.value).toBe("foo bar");
+
+      expect(store.get()?.data.value).toBe("foo");
+      expect(root.doc?.data.value).toBe("foo");
+
+      input.save();
+
+      expect(store.get()?.data.value).toBe("foo bar");
+      expect(root.doc?.data.value).toBe("foo bar");
     });
   });
 });

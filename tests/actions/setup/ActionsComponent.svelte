@@ -9,6 +9,8 @@
 		bindValueDeferred,
 	} from "../../../src";
 
+	export let manualSave: boolean = false;
+
 	export let store: AutomergeSvelteStore<DocumentShape>;
 </script>
 
@@ -47,6 +49,7 @@
 	<input
 		type="text"
 		use:bindValueDeferred={{
+			manualSave,
 			store,
 			path: "data.value",
 		}}
@@ -57,6 +60,7 @@
 	<input
 		type="text"
 		use:bindStringDeferred={{
+			manualSave,
 			store,
 			path: "data.value",
 		}}

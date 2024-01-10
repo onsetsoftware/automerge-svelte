@@ -9,7 +9,7 @@ import { InputElement } from "./types/input-elements.type";
 
 export function bindStringDeferred<T extends Record<string, any>>(
   node: InputElement,
-  { store, path, title }: BindOptions<T>,
+  options: BindOptions<T>,
 ) {
   return inputAction(
     {
@@ -26,7 +26,11 @@ export function bindStringDeferred<T extends Record<string, any>>(
           return doc;
         });
       },
-      changeListener: (node, { store, path, title }) => {
+      changeListener: (node, { store, path, title, manualSave }, forceSave) => {
+        if (manualSave && !forceSave) {
+          return;
+        }
+
         store.change(
           (doc) => {
             const lastValue = getByPath(doc, path);
@@ -47,6 +51,6 @@ export function bindStringDeferred<T extends Record<string, any>>(
       },
     },
     node,
-    { store, path, title },
+    options,
   );
 }
