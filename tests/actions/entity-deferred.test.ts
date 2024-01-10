@@ -167,5 +167,26 @@ Object.entries({
         document.people.entities["2"][field],
       );
     });
+
+    test("inputs marked as manualSave are saved when save is called", async () => {
+      render(ActionsComponent, {
+        props: { manualSave: true, store: entityStore },
+      });
+      const user = userEvent.setup();
+      const input: AutomergeSvelteInput = screen.getByLabelText(label);
+
+      expect(input.value).toBe("");
+
+      const toType = field === "age" ? "22" : "Alex";
+
+      input.focus();
+      await user.type(input, toType);
+      expect(input.value).toBe(toType);
+
+      input.save();
+
+      expect(get(store).people.entities["1"][field].toString()).toBe(toType);
+      expect(get(store).people.entities["2"][field].toString()).toBe(toType);
+    });
   });
 });

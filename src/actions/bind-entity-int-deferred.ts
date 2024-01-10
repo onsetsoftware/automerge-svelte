@@ -42,8 +42,12 @@ export function bindEntityIntDeferred<
           return doc;
         });
       },
-      changeListener: (node, { store, ids, path, title, manualSave }) => {
-        if (!changed || manualSave) {
+      changeListener: (
+        node,
+        { store, ids, path, title, manualSave },
+        forceSave,
+      ) => {
+        if (!changed || (manualSave && !forceSave)) {
           return;
         }
 

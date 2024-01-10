@@ -43,10 +43,10 @@ export function bindEntityStringDeferred<
           return doc;
         });
       },
-      changeListener: (node, options) => {
+      changeListener: (node, options, forceSave) => {
         const { store, ids, path, title, manualSave } = options;
 
-        if (!changed || manualSave) {
+        if (!changed || (manualSave && !forceSave)) {
           return;
         }
 
