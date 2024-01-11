@@ -62,6 +62,32 @@ describe("bind value/string deferred", async () => {
       expect(root.doc?.data.value).toBe("foo bar");
     });
 
+    test("updating the text box emits an `updated` event", async () => {
+      const user = userEvent.setup();
+      const input: HTMLInputElement = screen.getByLabelText(label);
+
+      expect(input.value).toBe("foo");
+
+      expect(store.get()?.data.value).toBe("foo");
+      expect(root.doc?.data.value).toBe("foo");
+
+      const updated = new Promise<void>((resolve) => {
+        const listener = () => {
+          input.removeEventListener("update", listener);
+          resolve();
+        };
+        input.addEventListener("update", listener);
+      });
+
+      input.focus();
+      await user.type(input, " bar");
+      expect(input.value).toBe("foo bar");
+
+      input.blur();
+
+      await updated;
+    });
+
     test("updating the store updates the value", async () => {
       const input: HTMLInputElement = screen.getByLabelText(label);
       expect(input.value).toBe("foo");

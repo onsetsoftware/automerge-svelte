@@ -35,10 +35,17 @@ Object.entries({
       entityStore = new AutomergeEntityStore(store, (doc) => doc.people);
     });
 
-    test("updating the text input value updates the store", async () => {
+    test("updating the text input value updates the store and emits an updated event", async () => {
       render(ActionsComponent, { props: { store: entityStore } });
       const user = userEvent.setup();
       const input: HTMLInputElement = screen.getByLabelText(label);
+      const updated = new Promise<void>((resolve) => {
+        const listener = () => {
+          input.removeEventListener("update", listener);
+          resolve();
+        };
+        input.addEventListener("update", listener);
+      });
 
       expect(input.value).toBe("");
 
@@ -59,6 +66,8 @@ Object.entries({
 
       expect(get(store).people.entities["1"][field].toString()).toBe(toType);
       expect(get(store).people.entities["2"][field].toString()).toBe(toType);
+
+      return updated;
     });
 
     test("updating the ids updates the value", async () => {
@@ -75,11 +84,19 @@ Object.entries({
       expect(input.value).toBe(document.people.entities["2"][field].toString());
     });
 
-    test("changing ids following a change updates the value", async () => {
+    test("changing ids following a change updates the value and emits an `update` event", async () => {
       const ids = writable(["1", "2"]);
       render(ActionsComponent, { props: { ids, store: entityStore } });
       const user = userEvent.setup();
       const input: HTMLInputElement = screen.getByLabelText(label);
+
+      const updated = new Promise<void>((resolve) => {
+        const listener = () => {
+          input.removeEventListener("update", listener);
+          resolve();
+        };
+        input.addEventListener("update", listener);
+      });
 
       const toType = field === "age" ? "22" : "Alex";
 
@@ -98,7 +115,7 @@ Object.entries({
 
       ids.set(["3"]);
 
-      await tick();
+      await updated;
 
       expect(get(store).people.entities["1"][field].toString()).toBe(toType);
       expect(get(store).people.entities["2"][field].toString()).toBe(toType);

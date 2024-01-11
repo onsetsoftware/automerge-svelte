@@ -1,6 +1,6 @@
 import { Unsubscriber } from "svelte/store";
-import { FormControlElement } from "./types/input-elements.type";
 import { AutomergeSvelteInput } from "./types/automerge-svelte-input.type";
+import { FormControlElement } from "./types/input-elements.type";
 
 type Actions<T, U extends FormControlElement = FormControlElement> = {
   subscribe: (node: U, options: T) => Unsubscriber;
@@ -18,6 +18,13 @@ export const inputAction = <
   options: T,
 ) => {
   let unsubscribe: Unsubscriber;
+  let changed = false;
+
+  function dispatchUpdate(options: T) {
+    const event = new CustomEvent("update", { detail: options });
+
+    node.dispatchEvent(event);
+  }
 
   function subscribe() {
     return actions.subscribe(node, options);
@@ -26,15 +33,18 @@ export const inputAction = <
   unsubscribe = subscribe();
 
   const inputListener = () => {
+    changed = true;
     actions.inputListener(node, options);
   };
 
   node.addEventListener("input", inputListener);
 
   const changeListener = () => {
-    if (actions.changeListener) {
+    if (changed && actions.changeListener) {
+      dispatchUpdate(options);
       actions.changeListener(node, options);
     }
+    changed = false;
   };
 
   node.addEventListener("change", changeListener);
@@ -51,11 +61,16 @@ export const inputAction = <
 
   return {
     update(newOptions: T) {
-      if (actions.onUpdate) {
+      if (changed === true) {
+        dispatchUpdate(newOptions);
+      }
+
+      if (changed && actions.onUpdate) {
         actions.onUpdate(node, options, newOptions);
       }
       unsubscribe();
       options = newOptions;
+      changed = false;
       unsubscribe = subscribe();
     },
     destroy() {

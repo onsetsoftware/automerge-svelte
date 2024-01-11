@@ -11,8 +11,6 @@ export function bindEntityValueDeferred<
   U,
   T extends HasId<T> & { [K in keyof T]: T[K] },
 >(node: FormControlElement, options: BindEntityOptions<U, T>) {
-  let changed = false;
-
   return inputAction(
     {
       subscribe: (node, { store, ids, path }) => {
@@ -21,8 +19,6 @@ export function bindEntityValueDeferred<
         });
       },
       inputListener: (node, { store, ids, path }, reset) => {
-        changed = true;
-
         const value = reset
           ? getEntitiesValue(store.get(), ids, path)
           : node.value;
@@ -44,7 +40,7 @@ export function bindEntityValueDeferred<
         { store, ids, path, title, manualSave },
         forceSave,
       ) => {
-        if (!changed || (manualSave && !forceSave)) {
+        if (manualSave && !forceSave) {
           return;
         }
 
@@ -63,8 +59,6 @@ export function bindEntityValueDeferred<
           },
           title ? { message: `Update ${title}` } : {},
         );
-
-        changed = false;
       },
       onUpdate: function (node, previousOptions, newOptions) {
         if (
