@@ -2,7 +2,10 @@ import { Unsubscriber } from "svelte/store";
 import { AutomergeSvelteInput } from "./types/automerge-svelte-input.type";
 import { FormControlElement } from "./types/input-elements.type";
 
-type Actions<T, U extends FormControlElement = FormControlElement> = {
+type Actions<
+  T extends { manualSave?: boolean } & { [key: string]: any },
+  U extends FormControlElement = FormControlElement,
+> = {
   subscribe: (node: U, options: T) => Unsubscriber;
   inputListener: (node: U, options: T, reset?: boolean) => void;
   changeListener?: (node: U, options: T, forceWrite?: boolean) => void;
@@ -10,7 +13,7 @@ type Actions<T, U extends FormControlElement = FormControlElement> = {
 };
 
 export const inputAction = <
-  T,
+  T extends { manualSave?: boolean } & { [key: string]: any },
   U extends FormControlElement = FormControlElement,
 >(
   actions: Actions<T, U>,
@@ -20,8 +23,13 @@ export const inputAction = <
   let unsubscribe: Unsubscriber;
   let changed = false;
 
-  function dispatchUpdate(options: T) {
-    const event = new CustomEvent("update", { detail: options });
+  function dispatchUpdate(options: T, previousOptions: T) {
+    const event = new CustomEvent<{ options: T; previousOptions: T }>(
+      "update",
+      {
+        detail: { options, previousOptions },
+      },
+    );
 
     node.dispatchEvent(event);
   }
@@ -41,10 +49,12 @@ export const inputAction = <
 
   const changeListener = () => {
     if (changed && actions.changeListener) {
-      dispatchUpdate(options);
-      actions.changeListener(node, options);
+      dispatchUpdate(options, options);
+      if (!options.manualSave) {
+        actions.changeListener(node, options);
+        changed = false;
+      }
     }
-    changed = false;
   };
 
   node.addEventListener("change", changeListener);
@@ -62,7 +72,7 @@ export const inputAction = <
   return {
     update(newOptions: T) {
       if (changed === true) {
-        dispatchUpdate(newOptions);
+        dispatchUpdate(newOptions, options);
       }
 
       if (changed && actions.onUpdate) {

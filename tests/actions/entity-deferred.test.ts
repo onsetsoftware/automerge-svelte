@@ -91,7 +91,12 @@ Object.entries({
       const input: HTMLInputElement = screen.getByLabelText(label);
 
       const updated = new Promise<void>((resolve) => {
-        const listener = () => {
+        const listener = (e: Event) => {
+          expect((e as CustomEvent).detail.options.ids).toEqual(["3"]);
+          expect((e as CustomEvent).detail.previousOptions.ids).toEqual([
+            "1",
+            "2",
+          ]);
           input.removeEventListener("update", listener);
           resolve();
         };
@@ -120,6 +125,43 @@ Object.entries({
       expect(get(store).people.entities["1"][field].toString()).toBe(toType);
       expect(get(store).people.entities["2"][field].toString()).toBe(toType);
     });
+
+    test("with manualSave, blurring a changed input then changing the action options emits an update event", async () => {
+      const ids = writable(["1", "2"]);
+      render(ActionsComponent, {
+        props: { manualSave: true, ids, store: entityStore },
+      });
+      const user = userEvent.setup();
+      const input: HTMLInputElement = screen.getByLabelText(label);
+
+      const createUpdatePromise = () =>
+        new Promise<void>((resolve) => {
+          const listener = () => {
+            input.removeEventListener("update", listener);
+            resolve();
+          };
+          input.addEventListener("update", listener);
+        });
+
+      const toType = field === "age" ? "22" : "Alex";
+
+      expect(input.value).toBe("");
+
+      input.focus();
+      await user.type(input, toType);
+      expect(input.value).toBe(toType);
+
+      const updated = createUpdatePromise();
+      input.blur();
+
+      await updated;
+
+      const updated2 = createUpdatePromise();
+
+      ids.set(["3"]);
+
+      return updated2;
+    }, 200);
 
     test("changing ids when there has been no change does not update the store", async () => {
       const ids = writable(["1", "2"]);
