@@ -73,10 +73,10 @@ describe("bind value/string deferred", async () => {
 
       const updated = new Promise<void>((resolve) => {
         const listener = () => {
-          input.removeEventListener("update", listener);
+          input.removeEventListener("updated", listener);
           resolve();
         };
-        input.addEventListener("update", listener);
+        input.addEventListener("updated", listener);
       });
 
       input.focus();

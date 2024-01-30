@@ -25,7 +25,7 @@ export const inputAction = <
 
   function dispatchUpdate(options: T, previousOptions: T) {
     const event = new CustomEvent<{ options: T; previousOptions: T }>(
-      "update",
+      "updated",
       {
         detail: { options, previousOptions },
       },

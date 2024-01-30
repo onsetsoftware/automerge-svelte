@@ -36,15 +36,15 @@ Object.entries({
     });
 
     test("updating the text input value updates the store and emits an updated event", async () => {
-      render(ActionsComponent, { props: { store: entityStore } });
       const user = userEvent.setup();
+      render(ActionsComponent, { props: { store: entityStore } });
       const input: HTMLInputElement = screen.getByLabelText(label);
       const updated = new Promise<void>((resolve) => {
         const listener = () => {
-          input.removeEventListener("update", listener);
+          input.removeEventListener("updated", listener);
           resolve();
         };
-        input.addEventListener("update", listener);
+        input.addEventListener("updated", listener);
       });
 
       expect(input.value).toBe("");
@@ -97,10 +97,10 @@ Object.entries({
             "1",
             "2",
           ]);
-          input.removeEventListener("update", listener);
+          input.removeEventListener("updated", listener);
           resolve();
         };
-        input.addEventListener("update", listener);
+        input.addEventListener("updated", listener);
       });
 
       const toType = field === "age" ? "22" : "Alex";
@@ -137,10 +137,10 @@ Object.entries({
       const createUpdatePromise = () =>
         new Promise<void>((resolve) => {
           const listener = () => {
-            input.removeEventListener("update", listener);
+            input.removeEventListener("updated", listener);
             resolve();
           };
-          input.addEventListener("update", listener);
+          input.addEventListener("updated", listener);
         });
 
       const toType = field === "age" ? "22" : "Alex";
