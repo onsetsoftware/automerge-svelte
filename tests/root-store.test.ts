@@ -4,10 +4,11 @@ import {
   AutomergeStore,
 } from "@onsetsoftware/automerge-store";
 import { documentData, type DocumentType } from "./data";
-import { type Doc, from } from "@automerge/automerge";
+import { type Doc, from, load } from "@automerge/automerge";
 import { AutomergeSvelteStore } from "../src/automerge-svelte-store";
 import { get } from "svelte/store";
 import { Repo } from "@automerge/automerge-repo";
+import { DummyStorageAdapter } from "./helpers/dummy-storage-adapter";
 
 export const pause = (t = 0) =>
   new Promise<void>((resolve) => setTimeout(() => resolve(), t));
@@ -98,6 +99,76 @@ describe("root store", () => {
       });
     });
   });
+
+  test(
+    "an automerge repo store updates subscribers who have subscribed before ready",
+    async () => {
+      const storage = new DummyStorageAdapter();
+      const repo = new Repo({
+        network: [],
+        storage,
+      });
+
+      const data = {
+        ...documentData,
+        text: "hello world",
+        object: {
+          ...documentData.object,
+          text: "hello world",
+        },
+      };
+
+      const handle = repo.create<typeof data>();
+
+      await handle.doc();
+
+      handle.change((doc: Doc<typeof data>) => {
+        Object.assign(doc, data);
+      });
+
+      await pause(100);
+
+      expect(await handle.doc()).toEqual(data);
+
+      const connectedRepo = new Repo({
+        network: [],
+        storage,
+      });
+
+      const found = connectedRepo.find<DocumentType>(handle.documentId);
+
+      const store = new AutomergeRepoStore<DocumentType>(found);
+      const localRootStore = new AutomergeSvelteStore(store);
+
+      expect(get(localRootStore.ready)).toBe(false);
+      expect(get(localRootStore)).toEqual(null);
+
+      const contentsP = new Promise<void>((done) => {
+        let count = 0;
+        localRootStore.subscribe((doc) => {
+          if (count === 0) {
+            expect(doc).toEqual(null);
+            count++;
+            return;
+          }
+          expect(doc).toEqual(data);
+          done();
+        });
+      });
+
+      const readyP = new Promise<void>((done) => {
+        localRootStore.ready.subscribe((ready) => {
+          if (!ready) return;
+
+          expect(localRootStore.get()).toEqual(data);
+          done();
+        });
+      });
+
+      await Promise.all([contentsP, readyP]);
+    },
+    { timeout: 1000 },
+  );
 
   test("root store updates when the automerge store updates", () =>
     new Promise<void>((done) => {

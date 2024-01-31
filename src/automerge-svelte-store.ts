@@ -34,9 +34,7 @@ export class AutomergeSvelteStore<T>
     this.#store = store || null;
 
     this.#state = writable(store?.isReady ? store.doc : null, () => {
-      if (store?.isReady) {
-        this.setStore();
-      }
+      this.setStore();
 
       return this.#unSubscribe;
     });
@@ -110,7 +108,7 @@ export class AutomergeSvelteStore<T>
   private setStore() {
     this.#unSubscriber =
       this.#store?.subscribe((doc: Doc<T>) => {
-        this.#state.set(doc);
+        this.#state.set(doc ?? null);
       }) ?? (() => {});
   }
 
