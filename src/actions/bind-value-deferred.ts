@@ -16,8 +16,8 @@ export function bindValueDeferred<T extends Record<string, any>>(
         });
       },
       inputListener: (node, { store, path }, reset) => {
-        const value =
-          reset && store.doc ? getByPath(store.doc, path) : node.value;
+        const doc = store.get();
+        const value = reset && doc ? getByPath(doc, path) : node.value;
 
         store.localChange((doc) => {
           doc = quickClone(doc);

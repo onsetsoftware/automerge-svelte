@@ -1,8 +1,8 @@
 import { Path } from "dot-path-value";
-import { AutomergeSvelteStore } from "../../automerge-svelte-store";
+import { AutomergeSvelteStoreInterface } from "../../automerge-svelte-store.type";
 
 export type BindOptions<T extends Record<string, any>> = {
-  store: AutomergeSvelteStore<T>;
+  store: AutomergeSvelteStoreInterface<T>;
   path: Path<T>;
   title?: string;
   manualSave?: boolean;
