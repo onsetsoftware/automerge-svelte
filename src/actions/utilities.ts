@@ -13,7 +13,7 @@ export const getEntitiesValue = <
   const values = new Set(ids.map((id) => getByPath(doc.entities[id], path)));
 
   if (values.size === 1) {
-    return (getByPath(doc.entities[ids[0]], path) as string) || "";
+    return (getByPath(doc.entities[ids[0]], path) as string) ?? "";
   } else {
     return "";
   }

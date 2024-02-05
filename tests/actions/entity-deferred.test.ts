@@ -220,7 +220,7 @@ Object.entries({
       expect(input.value).toBe(toType);
 
       input.reset();
-      expect(input.value).toBe("");
+      expect(input.value).toBe("")
       expect(get(store).people.entities["1"][field]).toBe(
         document.people.entities["1"][field],
       );

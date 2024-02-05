@@ -29,7 +29,7 @@ export function bindEntityIntDeferred<
             setByPath(
               doc.entities[id],
               path,
-              parseInt(value || "0") as PathValue<T, typeof path>,
+              parseInt(value ?? "0") as PathValue<T, typeof path>,
             );
           });
           return doc;

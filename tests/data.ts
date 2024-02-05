@@ -19,6 +19,11 @@ export type DocumentType = {
 export type Person = {
   id: string;
   name: string;
+  surname: string;
+  age: number;
+  children: number;
+  married: boolean;
+  alive: boolean;
 };
 
 export const documentData: DocumentType = {
@@ -37,10 +42,20 @@ export const documentData: DocumentType = {
       "id-1": {
         id: "id-1",
         name: "Alex",
+        surname: "Smith",
+        age: 30,
+        children: 0,
+        married: true,
+        alive: true,
       },
       "id-2": {
         id: "id-2",
         name: "John",
+        surname: "Smith",
+        age: 40,
+        children: 0,
+        married: false,
+        alive: true,
       },
     },
   },
