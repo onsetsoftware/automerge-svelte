@@ -126,6 +126,37 @@ Object.entries({
       expect(get(store).people.entities["2"][field].toString()).toBe(toType);
     });
 
+    test("keeping the ids the same (but causing the action to update) doesn't cancel a change", async () => {
+      const ids = writable(["1", "2"]);
+      render(ActionsComponent, { props: { ids, store: entityStore } });
+      const user = userEvent.setup();
+      const input: HTMLInputElement = screen.getByLabelText(label);
+
+      const toType = field === "age" ? "22" : "Alex";
+
+      expect(input.value).toBe("");
+
+      input.focus();
+      await user.type(input, toType);
+      expect(input.value).toBe(toType);
+
+      expect(get(store).people.entities["1"][field]).toBe(
+        document.people.entities["1"][field],
+      );
+      expect(get(store).people.entities["2"][field]).toBe(
+        document.people.entities["2"][field],
+      );
+
+      ids.set(["1", "2"]);
+
+      await tick();
+
+      input.blur();
+
+      expect(get(store).people.entities["1"][field].toString()).toBe(toType);
+      expect(get(store).people.entities["2"][field].toString()).toBe(toType);
+    });
+
     test("with manualSave, blurring a changed input then changing the action options emits an update event", async () => {
       const ids = writable(["1", "2"]);
       render(ActionsComponent, {
@@ -220,7 +251,7 @@ Object.entries({
       expect(input.value).toBe(toType);
 
       input.reset();
-      expect(input.value).toBe("")
+      expect(input.value).toBe("");
       expect(get(store).people.entities["1"][field]).toBe(
         document.people.entities["1"][field],
       );

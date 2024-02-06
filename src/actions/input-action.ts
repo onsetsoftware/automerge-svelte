@@ -1,6 +1,7 @@
 import { Unsubscriber } from "svelte/store";
 import { AutomergeSvelteInput } from "./types/automerge-svelte-input.type";
 import { FormControlElement } from "./types/input-elements.type";
+import { deepEqual } from "fast-equals";
 
 type Actions<
   T extends { manualSave?: boolean } & { [key: string]: any },
@@ -9,7 +10,6 @@ type Actions<
   subscribe: (node: U, options: T) => Unsubscriber;
   inputListener: (node: U, options: T, reset?: boolean) => void;
   changeListener?: (node: U, options: T, forceWrite?: boolean) => void;
-  onUpdate?: (node: U, previousOptions: T, newOptions: T) => void;
 };
 
 export const inputAction = <
@@ -71,13 +71,15 @@ export const inputAction = <
 
   return {
     update(newOptions: T) {
-      if (changed === true) {
-        dispatchUpdate(newOptions, options);
+      if (deepEqual(newOptions, options)) {
+        return;
       }
 
-      if (changed && actions.onUpdate) {
-        actions.onUpdate(node, options, newOptions);
+      if (changed === true) {
+        dispatchUpdate(newOptions, options);
+        changeListener();
       }
+
       unsubscribe();
       options = newOptions;
       changed = false;

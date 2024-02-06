@@ -4,7 +4,6 @@ import { inputAction } from "./input-action";
 import { BindEntityOptions } from "./types/bind-entity-options.type";
 import { FormControlElement } from "./types/input-elements.type";
 import { PathValue, getByPath, setByPath } from "dot-path-value";
-import { equalArrays } from "../helpers/equal-arrays";
 import { getEntitiesValue } from "./utilities";
 
 export function bindEntityValueDeferred<
@@ -59,14 +58,6 @@ export function bindEntityValueDeferred<
           },
           title ? { message: `Update ${title}` } : {},
         );
-      },
-      onUpdate: function (node, previousOptions, newOptions) {
-        if (
-          !equalArrays(previousOptions.ids, newOptions.ids) &&
-          this.changeListener
-        ) {
-          this.changeListener(node, previousOptions);
-        }
       },
     },
     node,

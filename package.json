@@ -35,7 +35,8 @@
     "@onsetsoftware/mutable-js": "^0.6.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "diff": "^5.1.0",
-    "dot-path-value": "^0.0.10"
+    "dot-path-value": "^0.0.10",
+    "fast-equals": "^5.0.1"
   },
   "files": [
     "dist"

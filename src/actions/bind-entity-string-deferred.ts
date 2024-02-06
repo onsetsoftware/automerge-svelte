@@ -2,7 +2,6 @@ import { patch } from "@onsetsoftware/automerge-patcher";
 import { HasId } from "@onsetsoftware/entity-state";
 import { PathValue, getByPath, setByPath } from "dot-path-value";
 import { getStringPatches } from "../diff-to-patches";
-import { equalArrays } from "../helpers/equal-arrays";
 import { quickClone } from "../helpers/quick-clone";
 import { inputAction } from "./input-action";
 import { BindEntityOptions } from "./types/bind-entity-options.type";
@@ -66,14 +65,6 @@ export function bindEntityStringDeferred<
           },
           title ? { message: `Update ${title}` } : {},
         );
-      },
-      onUpdate: function (node, previousOptions, newOptions) {
-        if (
-          !equalArrays(previousOptions.ids, newOptions.ids) &&
-          this.changeListener
-        ) {
-          this.changeListener(node, previousOptions);
-        }
       },
     },
     node,
