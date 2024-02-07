@@ -2,7 +2,7 @@ import type { Patch } from "@automerge/automerge";
 import { from } from "@automerge/automerge";
 import { patch } from "@onsetsoftware/automerge-patcher";
 import { AutomergeStore } from "@onsetsoftware/automerge-store";
-import { get } from "svelte/store";
+import { get, writable } from "svelte/store";
 import { beforeEach, describe, expect, test } from "vitest";
 import { AutomergeDerivedStore } from "../src/automerge-derived-store";
 import { AutomergeSvelteStore } from "../src/automerge-svelte-store";
@@ -123,5 +123,88 @@ describe("root store", () => {
         return "there world";
       });
     });
+  });
+
+  test("a derived store can switch based on a single other stores", () => {
+    const otherStore = writable("id-1");
+    const derivedStore = new AutomergeDerivedStore(
+      rootStore,
+      (doc, other) => {
+        return doc.people.entities[other];
+      },
+      otherStore,
+    );
+
+    expect(get(derivedStore)).toEqual(documentData.people.entities["id-1"]);
+
+    otherStore.set("id-2");
+
+    expect(get(derivedStore)).toEqual(documentData.people.entities["id-2"]);
+  });
+
+  test("a derived store can switch based on multiple other stores", () => {
+    const otherStore = writable("id-1");
+    const anotherStore = writable("name");
+    const derivedStore = new AutomergeDerivedStore(
+      rootStore,
+      (doc, [other, another]) => {
+        return doc.people.entities[other][another];
+      },
+      [otherStore, anotherStore],
+    );
+
+    expect(get(derivedStore)).toEqual(
+      documentData.people.entities["id-1"]["name"],
+    );
+
+    otherStore.set("id-2");
+
+    expect(get(derivedStore)).toEqual(
+      documentData.people.entities["id-2"]["name"],
+    );
+  });
+
+  test("a derived store can change based on other stores", () => {
+    const otherStore = writable("id-1");
+    const derivedStore = new AutomergeDerivedStore(
+      rootStore,
+      (doc, other) => {
+        return doc.people.entities[other];
+      },
+      otherStore,
+    );
+
+    expect(get(derivedStore)).toEqual(documentData.people.entities["id-1"]);
+
+    otherStore.set("id-2");
+
+    derivedStore.change((doc) => {
+      doc.name = "Alex";
+    });
+
+    expect(get(derivedStore).id).toEqual("id-2");
+    expect(get(derivedStore).name).toEqual("Alex");
+  });
+
+  test("a derived store can locally change based on other stores", () => {
+    const otherStore = writable("id-1");
+    const derivedStore = new AutomergeDerivedStore(
+      rootStore,
+      (doc, other) => {
+        return doc.people.entities[other];
+      },
+      otherStore,
+    );
+
+    expect(get(derivedStore)).toEqual(documentData.people.entities["id-1"]);
+
+    otherStore.set("id-2");
+
+    derivedStore.change((doc) => {
+      doc.name = "Alex";
+    });
+
+    expect(get(derivedStore).id).toEqual("id-2");
+    expect(get(derivedStore).name).toEqual("Alex");
   });
 });
