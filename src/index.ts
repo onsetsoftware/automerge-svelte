@@ -22,6 +22,7 @@ export { getEntitiesValue } from "./actions/utilities";
 export { AutomergeDerivedStore } from "./automerge-derived-store";
 export { AutomergeEntityStore } from "./automerge-entity-store";
 export { AutomergeSvelteStore } from "./automerge-svelte-store";
+export { AutomergeWritableStore } from "./automerge-writable-store";
 
 export type { AutomergeSvelteStoreInterface } from "./automerge-svelte-store.type";
 
