@@ -100,31 +100,6 @@ describe("root store", () => {
     });
   });
 
-  test("single value derived stores can be changed", () => {
-    new Promise<void>((done) => {
-      let initialRun = true;
-
-      const singleValueStore = new AutomergeDerivedStore(
-        rootStore,
-        (doc) => doc.object?.hello,
-      );
-      singleValueStore.subscribe((hello) => {
-        if (initialRun) {
-          expect(hello).toEqual("world");
-          initialRun = false;
-          return;
-        }
-
-        expect(hello).toEqual("there world");
-        done();
-      });
-
-      singleValueStore.localChange(() => {
-        return "there world";
-      });
-    });
-  });
-
   test("a derived store can switch based on a single other stores", () => {
     const otherStore = writable("id-1");
     const derivedStore = new AutomergeDerivedStore(

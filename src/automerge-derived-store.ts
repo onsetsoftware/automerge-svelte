@@ -9,7 +9,7 @@ import {
 } from "svelte/store";
 import type { AutomergeSvelteStoreInterface } from "./automerge-svelte-store.type";
 
-export class AutomergeDerivedStore<T, U, V extends Stores = []>
+export class AutomergeDerivedStore<T extends object, U, V extends Stores = []>
   implements Readable<T>, AutomergeSvelteStoreInterface<T>
 {
   #rootStore: AutomergeSvelteStoreInterface<U>;
