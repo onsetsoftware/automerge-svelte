@@ -85,6 +85,12 @@ describe("writable store", () => {
       "world",
       "hello there world",
     ]);
+
+    writableStore.update((doc) => {
+      return doc.filter((item) => item !== "world");
+    });
+
+    expect(get(writableStore)).toEqual(["hello", "hello there world"]);
   });
 
   test("writable non object stores throw an error", () => {
