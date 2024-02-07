@@ -8,6 +8,7 @@ import { AutomergeDerivedStore } from "../src/automerge-derived-store";
 import { AutomergeSvelteStore } from "../src/automerge-svelte-store";
 import { AutomergeWritableStore } from "../src/automerge-writable-store";
 import { documentData, type DocumentType } from "./data";
+import { AutomergeSvelteStoreInterface } from "../src";
 
 describe("writable store", () => {
   let store: AutomergeStore<DocumentType>,
@@ -91,6 +92,18 @@ describe("writable store", () => {
     });
 
     expect(get(writableStore)).toEqual(["hello", "hello there world"]);
+
+    writableStore.update((doc) => {
+      return [...doc, "world"];
+    });
+
+    expect(get(writableStore)).toEqual(["hello", "hello there world", "world"]);
+
+    writableStore.update((doc) => {
+      return doc.filter((item) => item !== "world");
+    });
+
+    expect(get(writableStore)).toEqual(["hello", "hello there world"]);
   });
 
   test("writable non object stores throw an error", () => {
@@ -100,7 +113,9 @@ describe("writable store", () => {
     );
 
     expect(() => {
-      new AutomergeWritableStore(derivedStringStore);
+      new AutomergeWritableStore(
+        derivedStringStore as unknown as AutomergeSvelteStoreInterface<any>,
+      );
     }).toThrow();
   });
 });

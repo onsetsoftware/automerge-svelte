@@ -1,18 +1,18 @@
 import { type Updater, type Writable } from "svelte/store";
 import type { AutomergeSvelteStoreInterface } from "./automerge-svelte-store.type";
-import { diffArrays } from "diff";
+import { diff } from "just-diff";
+import { diffApply } from "just-diff-apply";
+import { quickClone } from "./helpers/quick-clone";
 
-export class AutomergeWritableStore<T>
+export class AutomergeWritableStore<T extends object>
   implements Writable<T>, AutomergeSvelteStoreInterface<T>
 {
   #rootStore: AutomergeSvelteStoreInterface<T>;
 
   constructor(rootStore: AutomergeSvelteStoreInterface<T>) {
     this.#rootStore = rootStore;
-    if (typeof rootStore.get() === "string") {
-      throw new Error(
-        "We cannot currently create writable store from string value",
-      );
+    if (typeof rootStore.get() !== "object") {
+      throw new Error("Writable stores must point to an object or array");
     }
   }
 
@@ -38,25 +38,9 @@ export class AutomergeWritableStore<T>
 
   set(value: T) {
     this.#rootStore.change((doc) => {
-      if (Array.isArray(doc) && Array.isArray(value)) {
-        const diffs = diffArrays(doc, value);
-        diffs.forEach((diff) => {
-          if (diff.added) {
-            doc.push(...diff.value);
-          } else if (diff.removed) {
-            const index = doc.indexOf(diff.value[0]);
-            if (index > -1) {
-              doc.splice(index, 1);
-            }
-          }
-        });
-      } else if (
-        doc !== null &&
-        typeof doc === "object" &&
-        typeof value === "object"
-      ) {
-        Object.assign(doc, value);
-      }
+      const patches = diff(quickClone(doc), value);
+
+      diffApply(doc, patches);
     });
   }
 
