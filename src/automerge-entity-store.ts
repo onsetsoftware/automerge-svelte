@@ -1,16 +1,16 @@
 import type {
-  EntityState,
-  GetIdType,
-  HasId,
+    EntityState,
+    GetIdType,
+    HasId,
 } from "@onsetsoftware/entity-state";
 import {
-  addEntities,
-  addEntity,
-  deleteEntity,
-  updateEntity,
+    addEntities,
+    addEntity,
+    deleteEntity,
+    updateEntity,
 } from "@onsetsoftware/mutable-js";
 import { AutomergeDerivedStore } from "./automerge-derived-store";
-import type { AutomergeSvelteStore } from "./automerge-svelte-store";
+import { AutomergeSvelteStoreInterface } from "./automerge-svelte-store.type";
 
 export type EntityTitles = {
   singular: string;
@@ -23,7 +23,7 @@ export class AutomergeEntityStore<
 > extends AutomergeDerivedStore<EntityState<T>, U> {
   readonly #titles: EntityTitles | undefined;
   constructor(
-    rootStore: AutomergeSvelteStore<U>,
+    rootStore: AutomergeSvelteStoreInterface<U>,
     fn: (doc: U) => EntityState<T>,
     titles?: EntityTitles,
   ) {

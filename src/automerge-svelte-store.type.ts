@@ -9,4 +9,6 @@ export interface AutomergeSvelteStoreInterface<T> {
   localChange(callback: Updater<T>): void;
 
   get(): Doc<T> | null;
+
+  transaction(changes: () => void | string, message?: string): void;
 }

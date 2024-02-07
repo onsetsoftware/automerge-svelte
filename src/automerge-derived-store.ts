@@ -1,4 +1,3 @@
-import type { AutomergeSvelteStore } from "./automerge-svelte-store";
 import type { ChangeFn, ChangeOptions } from "@automerge/automerge";
 import {
   type Readable,
@@ -11,11 +10,11 @@ import type { AutomergeSvelteStoreInterface } from "./automerge-svelte-store.typ
 export class AutomergeDerivedStore<T, U>
   implements Readable<T>, AutomergeSvelteStoreInterface<T>
 {
-  #rootStore: AutomergeSvelteStore<U>;
+  #rootStore: AutomergeSvelteStoreInterface<U>;
   #state: Writable<T>;
   #discriminator: (doc: U) => T;
 
-  constructor(rootStore: AutomergeSvelteStore<U>, fn: (doc: U) => T) {
+  constructor(rootStore: AutomergeSvelteStoreInterface<U>, fn: (doc: U) => T) {
     this.#rootStore = rootStore;
     this.#discriminator = fn;
 
@@ -26,7 +25,7 @@ export class AutomergeDerivedStore<T, U>
     });
   }
 
-  transaction(changes: () => void, message?: string) {
+  transaction(changes: () => void | string, message?: string) {
     this.#rootStore.transaction(changes, message);
   }
 
