@@ -4,7 +4,7 @@ import {
   AutomergeStore,
 } from "@onsetsoftware/automerge-store";
 import { documentData, type DocumentType } from "./data";
-import { type Doc, from, load } from "@automerge/automerge";
+import { type Doc, from, splice } from "@automerge/automerge";
 import { AutomergeSvelteStore } from "../src/automerge-svelte-store";
 import { get } from "svelte/store";
 import { Repo } from "@automerge/automerge-repo";
@@ -28,9 +28,10 @@ describe("root store", () => {
     expect(rootStore).toBeDefined();
     expect(rootStore.get()).toEqual(null);
     expect(get(rootStore)).toEqual(null);
+
     return new Promise<void>((done) => {
-      rootStore.ready.subscribe((ready) => {
-        expect(ready).toBe(false);
+      rootStore.subscribe((doc) => {
+        expect(doc).toEqual(null);
         done();
       });
     });
@@ -41,13 +42,6 @@ describe("root store", () => {
 
     rootStore.swapStore(store);
     expect(rootStore.get()).toEqual(documentData);
-
-    return new Promise<void>((done) => {
-      rootStore.ready.subscribe((ready) => {
-        expect(ready).toBe(true);
-        done();
-      });
-    });
   });
 
   test("root store contains the automerge store data", () => {
@@ -56,15 +50,7 @@ describe("root store", () => {
     expect(rootStore.get()).toEqual(documentData);
   });
 
-  test("a root store is set as `ready`", () =>
-    new Promise<void>((done) => {
-      rootStore.ready.subscribe((ready) => {
-        expect(ready).toBe(true);
-        done();
-      });
-    }));
-
-  test("an automerge-repo store can be passed in and is marked as ready", () => {
+  test("an automerge-repo store can be passed in", async () => {
     const repo = new Repo({
       network: [],
     });
@@ -83,25 +69,17 @@ describe("root store", () => {
       Object.assign(doc, data);
     });
 
-    const found = repo.find<DocumentType>(handle.url);
+    const found = await repo.find<DocumentType>(handle.url);
 
     const store = new AutomergeRepoStore<DocumentType>(found);
     const rootStore = new AutomergeSvelteStore(store);
 
-    expect(get(rootStore.ready)).toBe(false);
-
-    return new Promise<void>((done) => {
-      rootStore.ready.subscribe((ready) => {
-        if (!ready) return;
-
-        expect(rootStore.get()).toEqual(data);
-        done();
-      });
-    });
+    expect(rootStore.get()).toEqual(data);
   });
 
   test(
     "an automerge repo store updates subscribers who have subscribed before ready",
+    { timeout: 1000 },
     async () => {
       const storage = new DummyStorageAdapter();
       const repo = new Repo({
@@ -120,7 +98,7 @@ describe("root store", () => {
 
       const handle = repo.create<typeof data>();
 
-      await handle.doc();
+      handle.doc();
 
       handle.change((doc: Doc<typeof data>) => {
         Object.assign(doc, data);
@@ -128,46 +106,30 @@ describe("root store", () => {
 
       await pause(100);
 
-      expect(await handle.doc()).toEqual(data);
+      expect(handle.doc()).toEqual(data);
 
       const connectedRepo = new Repo({
         network: [],
         storage,
       });
 
-      const found = connectedRepo.find<DocumentType>(handle.documentId);
+      const found = await connectedRepo.find<DocumentType>(handle.documentId);
 
       const store = new AutomergeRepoStore<DocumentType>(found);
       const localRootStore = new AutomergeSvelteStore(store);
 
-      expect(get(localRootStore.ready)).toBe(false);
-      expect(get(localRootStore)).toEqual(null);
+      expect(localRootStore.get()).toEqual(data);
 
       const contentsP = new Promise<void>((done) => {
         let count = 0;
         localRootStore.subscribe((doc) => {
-          if (count === 0) {
-            expect(doc).toEqual(null);
-            count++;
-            return;
-          }
           expect(doc).toEqual(data);
           done();
         });
       });
 
-      const readyP = new Promise<void>((done) => {
-        localRootStore.ready.subscribe((ready) => {
-          if (!ready) return;
-
-          expect(localRootStore.get()).toEqual(data);
-          done();
-        });
-      });
-
-      await Promise.all([contentsP, readyP]);
+      await Promise.all([contentsP]);
     },
-    { timeout: 1000 },
   );
 
   test("root store updates when the automerge store updates", () =>
@@ -180,12 +142,12 @@ describe("root store", () => {
           return;
         }
 
-        expect(doc.text.toString()).toEqual("hello there world");
+        expect(doc.string).toEqual("hello there world");
         done();
       });
 
       store.change((doc) => {
-        doc.text.insertAt(6, "there ");
+        splice(doc, ["string"], 6, 0, "there ");
       });
     }));
 
@@ -203,7 +165,7 @@ describe("root store", () => {
       });
 
       store.change((doc) => {
-        doc.text.insertAt(6, "there ");
+        splice(doc, ["string"], 6, 0, "there ");
       });
     }));
 
@@ -218,7 +180,7 @@ describe("root store", () => {
           return;
         }
 
-        expect(doc.text.toString()).toEqual("hello there world");
+        expect(doc.string).toEqual("hello there world");
         done();
       });
 
@@ -234,7 +196,7 @@ describe("root store", () => {
       sub2();
 
       store.change((doc) => {
-        doc.text.insertAt(6, "there ");
+        splice(doc, ["string"], 6, 0, "there ");
       });
     }));
 
@@ -317,41 +279,10 @@ describe("root store", () => {
       );
     }));
 
-  test("a root store is set as `ready` after swapping", () =>
-    new Promise<void>((done) => {
-      let cycles = 0;
-
-      rootStore.ready.subscribe((ready) => {
-        if (cycles === 0) {
-          expect(ready).toBe(true);
-        } else if (cycles === 1) {
-          expect(ready).toBe(false);
-        } else if (cycles === 2) {
-          expect(ready).toBe(true);
-          done();
-          return;
-        }
-
-        cycles++;
-      });
-
-      const newData: DocumentType = {
-        ...documentData,
-        string: "hello there world",
-      };
-      const replacementDoc = from<DocumentType>(newData);
-
-      setTimeout(() => {
-        rootStore.swapStore(
-          new AutomergeStore<DocumentType>("test2", replacementDoc),
-        );
-      }, 100);
-    }));
-
   test("the swapped store now receives changes", () => {
     const newData: DocumentType = {
       ...documentData,
-      string: "hello there world",
+      string: "hello world",
     };
     const replacementDoc = from<DocumentType>(newData);
 
@@ -360,12 +291,12 @@ describe("root store", () => {
     );
 
     rootStore.change((doc) => {
-      doc.text.insertAt(6, "there ");
+      splice(doc, ["string"], 6, 0, "there ");
     });
 
-    expect(get(rootStore).text.toString()).toEqual("hello there world");
+    expect(get(rootStore).string).toEqual("hello there world");
 
-    expect(store.doc.text.toString()).toEqual("hello world");
+    expect(store.doc.string).toEqual("hello world");
   });
 
   test("local changes are not reflected in the base store", () =>

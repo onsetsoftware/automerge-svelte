@@ -5,7 +5,6 @@ import type {
   PatchData,
 } from "@onsetsoftware/automerge-store";
 import {
-  derived,
   Subscriber,
   writable,
   type Readable,
@@ -20,8 +19,6 @@ export class AutomergeSvelteStore<T>
 {
   #store: AutomergeStore<T> | null;
   #state: Writable<T | null>;
-  #storeReady: Writable<boolean> = writable(false);
-  ready: Readable<boolean> = derived(this.#storeReady, (ready) => ready);
 
   #subscribers: number = 0;
   #unSubscriber: () => void = () => {};
@@ -33,14 +30,10 @@ export class AutomergeSvelteStore<T>
   constructor(store?: AutomergeStore<T>) {
     this.#store = store || null;
 
-    this.#state = writable(store?.isReady ? store.doc : null, () => {
+    this.#state = writable(store?.doc ?? null, () => {
       this.setStore();
 
       return this.#unSubscribe;
-    });
-
-    store?.onReady(() => {
-      this.setStoreReady();
     });
   }
 
@@ -91,10 +84,8 @@ export class AutomergeSvelteStore<T>
   swapStore(store: AutomergeStore<T>) {
     if (store) {
       this.#store = store;
-      this.setStoreReady();
     } else {
       this.#state.set(null);
-      this.#storeReady.set(false);
       this.#store = null;
     }
 
@@ -110,14 +101,6 @@ export class AutomergeSvelteStore<T>
       this.#store?.subscribe((doc: Doc<T>) => {
         this.#state.set(doc ?? null);
       }) ?? (() => {});
-  }
-
-  private setStoreReady() {
-    this.#storeReady.set(false);
-
-    this.#store?.onReady(() => {
-      this.#storeReady.set(true);
-    });
   }
 
   change(callback: ChangeFn<T>, options: ChangeOptions<T> = {}): Doc<T> {

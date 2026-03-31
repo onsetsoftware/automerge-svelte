@@ -1,8 +1,8 @@
 import type { DelPatch, InsertPatch } from "@automerge/automerge";
-import { change, from, Text } from "@automerge/automerge";
+import { change, from } from "@automerge/automerge";
 import { patch } from "@onsetsoftware/automerge-patcher";
 import { beforeEach, describe, expect, test } from "vitest";
-import { getStringPatches, getTextPatches } from "../src/diff-to-patches";
+import { getStringPatches } from "../src/diff-to-patches";
 
 describe("convert changes from diff into automerge patches", () => {
   beforeEach(() => {});
@@ -93,19 +93,6 @@ describe("convert changes from diff into automerge patches", () => {
 
   tests.forEach((testData) => {
     test(testData.name, () => {
-      const patches = getTextPatches(testData.a, testData.b);
-      expect(patches).toEqual(testData.expectedPatches);
-
-      const doc = from<{ hello: Text }>({ hello: new Text(testData.a) });
-      const updated = change<{ hello: Text }>(doc, (d) => {
-        patches.forEach((p) => {
-          p.path.unshift("hello");
-          patch(d, p);
-        });
-      });
-
-      expect(updated.hello.toString()).toEqual(testData.b);
-
       const stringPatches = getStringPatches(testData.a, testData.b);
 
       expect(stringPatches).toEqual(

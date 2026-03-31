@@ -1,6 +1,7 @@
 {
   "name": "@onsetsoftware/automerge-svelte",
   "description": "A svelte store and utilities for automerge",
+  "repository": "https://github.com/onsetsoftware/automerge-svelte",
   "version": "0.19.0",
   "type": "module",
   "scripts": {
@@ -10,33 +11,33 @@
   },
   "devDependencies": {
     "@onsetsoftware/entity-state": "^0.0.2",
-    "@testing-library/jest-dom": "^6.2.0",
-    "@testing-library/svelte": "^4.0.5",
-    "@testing-library/user-event": "^14.5.2",
-    "@types/diff": "^5.0.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/svelte": "^4.2.3",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/diff": "^5.2.3",
     "jsdom": "^23.2.0",
-    "svelte-preprocess": "^5.1.3",
-    "typescript": "^5.0.0",
-    "vite": "^5.0.0",
-    "vite-plugin-dts": "^3.0.0",
-    "vite-plugin-externalize-deps": "^0.8.0",
-    "vite-plugin-top-level-await": "^1.2.1",
-    "vite-plugin-wasm": "^3.1.0",
-    "vitest": "^1.0.0"
+    "svelte-preprocess": "^5.1.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vite-plugin-dts": "^4.0.0",
+    "vite-plugin-externalize-deps": "^0.10.0",
+    "vite-plugin-top-level-await": "^1.6.0",
+    "vite-plugin-wasm": "^3.6.0",
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "@automerge/automerge-repo": "^1.0.0",
+    "@automerge/automerge-repo": "^2.0.0",
     "svelte": "^4.0.0"
   },
   "dependencies": {
-    "@automerge/automerge": "^2.1.0",
-    "@onsetsoftware/automerge-patcher": "^0.13.0",
-    "@onsetsoftware/automerge-store": "^0.15.0",
-    "@onsetsoftware/mutable-js": "^0.6.0",
-    "@sveltejs/vite-plugin-svelte": "^3.0.0",
-    "diff": "^5.1.0",
-    "dot-path-value": "^0.0.10",
-    "fast-equals": "^5.0.1",
+    "@automerge/automerge": "^3.2.5",
+    "@onsetsoftware/automerge-patcher": "0.15.0-alpha.5",
+    "@onsetsoftware/automerge-store": "0.16.0-alpha.7",
+    "@onsetsoftware/mutable-js": "^0.8.0",
+    "@sveltejs/vite-plugin-svelte": "^3.1.2",
+    "diff": "^8.0.0",
+    "dot-path-value": "^0.0.11",
+    "fast-equals": "^6.0.0",
     "just-diff": "^6.0.2",
     "just-diff-apply": "^5.5.0"
   },
@@ -47,9 +48,9 @@
   "module": "./dist/automerge-svelte.js",
   "exports": {
     ".": {
+      "types": "./dist/types/index.d.ts",
       "import": "./dist/automerge-svelte.js",
-      "require": "./dist/automerge-svelte.umd.cjs",
-      "types": "./dist/types/index.d.ts"
+      "require": "./dist/automerge-svelte.umd.cjs"
     }
   },
   "types": "./dist/types/index.d.ts"

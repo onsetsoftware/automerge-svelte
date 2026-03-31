@@ -33,10 +33,10 @@ describe("root store", () => {
     expect(get(rootStore).object?.data).toEqual("hello there world");
   });
 
-  test("derived stores Text values can be updated", async () => {
+  test("derived stores string values can be updated", async () => {
     const p: Patch = {
       action: "del",
-      path: ["text", "1"],
+      path: ["hello", "1"],
       length: 3,
     };
     derivedStore.change((doc) => {
@@ -45,8 +45,8 @@ describe("root store", () => {
 
     await new Promise<void>((done) => {
       derivedStore.subscribe((doc) => {
-        expect(doc?.text?.toString()).toEqual("ag");
-        expect(get(rootStore)?.object?.text?.toString()).toEqual("ag");
+        expect(doc?.hello).toEqual("wd");
+        expect(get(rootStore)?.object?.hello).toEqual("wd");
         done();
       });
     });
