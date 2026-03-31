@@ -2,7 +2,7 @@
   "name": "@onsetsoftware/automerge-svelte",
   "description": "A svelte store and utilities for automerge",
   "repository": "https://github.com/onsetsoftware/automerge-svelte",
-  "version": "0.19.0",
+  "version": "0.20.0-alpha.0",
   "type": "module",
   "scripts": {
     "build": "tsc && vite build",
