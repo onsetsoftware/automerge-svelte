@@ -49,6 +49,7 @@ jobs:
       - name: run tests
         id: tests
         run: |
+          pnpm config set node-linker hoisted
           pnpm install
           pnpx vitest run
       - name: Build Release
