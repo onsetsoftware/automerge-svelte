@@ -35,6 +35,9 @@ importers:
       fast-equals:
         specifier: ^6.0.0
         version: 6.0.0
+      jsdom:
+        specifier: ^23.2.0
+        version: 23.2.0
       just-diff:
         specifier: ^6.0.2
         version: 6.0.2
@@ -60,9 +63,6 @@ importers:
       '@types/diff':
         specifier: ^5.2.3
         version: 5.2.3
-      jsdom:
-        specifier: ^23.2.0
-        version: 23.2.0
       svelte-preprocess:
         specifier: ^5.1.4
         version: 5.1.4(postcss@8.5.8)(svelte@4.2.20)(typescript@5.9.3)
