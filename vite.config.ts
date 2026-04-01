@@ -17,7 +17,7 @@ export default defineConfig({
       hot: !process.env.VITEST,
       preprocess: preprocess(),
     }),
-    externalizeDeps(),
+    !process.env.VITEST && externalizeDeps(),
     topLevelAwait(),
     wasm(),
     dts({
@@ -52,9 +52,6 @@ export default defineConfig({
     pool: "threads",
     globals: true,
     environment: "jsdom",
-    deps: {
-      inline: ["jsdom"],
-    },
     setupFiles: ["./tests/setup-tests.ts"],
   },
 });
