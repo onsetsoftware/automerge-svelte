@@ -49,7 +49,7 @@ export default defineConfig({
     },
   },
   test: {
-    pool: "threads",
+    pool: "forks",
     globals: true,
     environment: "jsdom",
     setupFiles: ["./tests/setup-tests.ts"],
