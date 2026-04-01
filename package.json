@@ -15,7 +15,6 @@
     "@testing-library/svelte": "^4.2.3",
     "@testing-library/user-event": "^14.6.1",
     "@types/diff": "^5.2.3",
-    "jsdom": "^23.2.0",
     "svelte-preprocess": "^5.1.4",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
@@ -23,7 +22,7 @@
     "vite-plugin-externalize-deps": "^0.10.0",
     "vite-plugin-top-level-await": "^1.6.0",
     "vite-plugin-wasm": "^3.6.0",
-    "vitest": "^3.2.4"
+    "vitest": "^4.1.2"
   },
   "peerDependencies": {
     "@automerge/automerge-repo": "^2.0.0",
@@ -38,6 +37,7 @@
     "diff": "^8.0.4",
     "dot-path-value": "^0.0.11",
     "fast-equals": "^6.0.0",
+    "jsdom": "^23.2.0",
     "just-diff": "^6.0.2",
     "just-diff-apply": "^5.5.0"
   },
