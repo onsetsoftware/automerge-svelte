@@ -17,7 +17,7 @@ export default defineConfig({
       hot: !process.env.VITEST,
       preprocess: preprocess(),
     }),
-    !process.env.VITEST && externalizeDeps(),
+    externalizeDeps(),
     topLevelAwait(),
     wasm(),
     dts({
@@ -49,7 +49,6 @@ export default defineConfig({
     },
   },
   test: {
-    pool: "forks",
     globals: true,
     environment: "jsdom",
     setupFiles: ["./tests/setup-tests.ts"],
